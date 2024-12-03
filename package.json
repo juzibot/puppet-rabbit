@@ -1,8 +1,15 @@
 {
   "name": "puppet-rabbit",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/src/mod.js",
+      "require": "./dist/cjs/src/mod.js"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +17,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@juzi/wechaty-puppet": "1.0.94"
+    "@juzi/wechaty-puppet": "1.0.94",
+    "amqplib": "^0.7.1",
+    "onirii": "^1.3.6",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.9.3",
+    "ts-node": "10.9.2",
+    "typescript": "5.7.2"
   }
 }

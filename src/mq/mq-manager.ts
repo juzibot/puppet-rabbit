@@ -1,0 +1,288 @@
+import { log } from '@juzi/wechaty-puppet'
+import { ConsumeMessage } from 'amqplib'
+import Onirii from 'onirii'
+import { AmqpChannelService } from 'onirii/lib/service/amqp/amqp-channel-service'
+import { AmqpConnectService } from 'onirii/lib/service/amqp/amqp-connect-service'
+import { sleep, SECOND, MINUTE } from '../util/time.js'
+import {
+  MqCommandResponseWaiter,
+  MqEventType,
+  MqMessageType,
+  MqReceiveMessage,
+  MqSendMessage,
+} from '../model/mq.js'
+import EventEmitter from 'events'
+
+const PRE = 'MqManager'
+
+enum LISTENER_TYPE {
+  ERROR,
+  CLOSE,
+}
+
+export class MqManager extends EventEmitter {
+  private static _instance: MqManager
+
+  public static get Instance(): MqManager {
+    return this._instance || (this._instance = new this())
+  }
+
+  private puppetConnection: AmqpConnectService | undefined
+  private puppetChannel: AmqpChannelService | undefined
+
+  private connected = false
+  private restartingConnection = false
+  private restartingChannel = false
+
+  private token: string | undefined
+
+  private static MqCommandResponsePool = new Map<
+    string,
+    MqCommandResponseWaiter
+  >()
+
+  private static async consumption(
+    msg: ConsumeMessage | null,
+    channel: AmqpChannelService | undefined,
+  ) {
+    log.info(PRE, msg?.content.toString(), channel?.instanceName)
+    const messageString = msg?.content.toString()
+    if (!messageString) {
+      await channel?.ackMessage(msg!)
+      return
+    }
+
+    try {
+      const message: MqReceiveMessage = JSON.parse(messageString)
+      if (message.type === MqMessageType.command) {
+        const waiter = this.MqCommandResponsePool.get(message.traceId)
+        if (!waiter) {
+          log.warn(PRE, `MqCommandResponsePool Not Found ${message.traceId}`)
+          return
+        }
+        if (message.code) {
+          waiter.rejector(new Error(message.error))
+        } else {
+          waiter.resolver(JSON.parse(message.data))
+        }
+        clearTimeout(waiter.timer)
+      } else {
+        this.Instance.handleEvent(message.eventType!, message.data)
+      }
+    } catch (e) {
+      log.error(PRE, `consumption() error: ${e}`)
+    }
+    await channel?.ackMessage(msg!)
+  }
+
+  public async init(token?: string, mqUri?: string) {
+    log.info(PRE, `init(${token})`)
+    if (!this.puppetConnection) {
+      if (!(token && mqUri)) {
+        throw new Error(`init() need token and mqUri`)
+      }
+      // no idea why have to add default
+      this.puppetConnection = Onirii.default.createAmqpConnect(
+        `puppet-${token}-${Date.now()}`,
+        mqUri,
+      )
+      this.token = token
+    }
+
+    await this.initConnect()
+    this.connected = true
+    await this.initChannel()
+  }
+
+  private async initConnect() {
+    log.info(PRE, 'initConnect()')
+    await this.puppetConnection!.ready()
+    await this.prepareConnectListener()
+    log.info(PRE, 'initConnect() connected mq service...')
+  }
+
+  private async initChannel() {
+    log.info(PRE, 'initChannel()')
+    this.puppetChannel = await this.createChannelService(10)
+    await this.prepareChannelListener()
+    await this.prepareQueue(this.puppetChannel)
+  }
+
+  private async prepareConnectListener() {
+    this.puppetConnection?.addCloseListener(
+      (err) => void this.reconnectMainConnect(err, LISTENER_TYPE.CLOSE),
+    )
+    this.puppetConnection?.addErrorListener(
+      (err) => void this.reconnectMainConnect(err, LISTENER_TYPE.ERROR),
+    )
+  }
+
+  private async createChannelService(prefetch: number) {
+    log.info(PRE, 'Creating Channel ...')
+    const instance = await this.puppetConnection?.createChannelService(false)
+    if (instance) {
+      await instance.setPrefetchCount(prefetch)
+      return instance
+    } else {
+      throw new Error(`Cant Create Amqp Channel Instance`)
+    }
+  }
+
+  private async prepareChannelListener() {
+    this.puppetChannel?.addCloseListener(() => {
+      log.info(`puppetChannel on close listener`)
+      void this.reconnectChannel()
+    })
+  }
+
+  private async reconnectMainConnect(err: Error, type: LISTENER_TYPE) {
+    log.info(PRE, `reconnectMainConnect(${LISTENER_TYPE[type]})`)
+    this.connected = false
+    if (this.restartingConnection) {
+      log.error(
+        PRE,
+        `reconnectMainConnect(${LISTENER_TYPE[type]}) under processing...`,
+      )
+      return
+    }
+
+    this.restartingConnection = true
+    log.error(
+      PRE,
+      `reconnectMainConnect(${LISTENER_TYPE[type]}) MQ Service Connect Receive ${LISTENER_TYPE[type]} event: ${err}`,
+    )
+
+    try {
+      await this.init()
+      await this.startConsume()
+    } catch (e) {
+      log.error(
+        PRE,
+        `reconnectMainConnect(${
+          LISTENER_TYPE[type] || type
+        }) Reconnect MQ Service Failed: ${e}`,
+      )
+      void this.reconnectMainConnect(e as Error, type)
+    } finally {
+      this.restartingConnection = false
+    }
+
+    log.info(
+      PRE,
+      `reconnectMainConnect(${LISTENER_TYPE[type]}) Reconnected MQ Service Done.`,
+    )
+  }
+
+  public async reconnectChannel(): Promise<void> {
+    log.info(PRE, `reconnectChannel()`)
+    if (this.restartingConnection) {
+      log.error(PRE, `reconnectChannel() restart connect under processing...`)
+      return
+    }
+    if (this.restartingChannel) {
+      log.error(PRE, `reconnectChannel(}) restart channel under processing...`)
+      return
+    }
+
+    this.restartingChannel = true
+    log.error(
+      PRE,
+      `reconnectChannel(}) MQ Service Channel Connect Receive Close event.`,
+    )
+
+    try {
+      await sleep(MINUTE)
+      this.puppetChannel = await this.createChannelService(10)
+      await this.startConsumer
+    } catch (e) {
+      log.error(PRE, `reconnectChannel(}) Reconnect MQ Service Failed: ${e}`)
+      return this.reconnectChannel()
+    } finally {
+      this.restartingChannel = false
+    }
+
+    log.info(PRE, `reconnectChannel(}) Reconnected MQ Service Done.`)
+  }
+
+  public async startConsume() {
+    while (true) {
+      if (this.connected) {
+        break
+      }
+      log.warn(PRE, 'startConsume() MQ Server Connect Not Ready Yet')
+      await sleep(5 * SECOND)
+    }
+    await this.stopConsume()
+    log.info(PRE, 'startConsume() Creating Consumer ...')
+    await this.startConsumer()
+  }
+
+  public async stopConsume() {
+    log.info(PRE, 'stopConsume() Stopping Consumer ...')
+    this.puppetChannel?.killConsume('puppetConsumer')
+  }
+
+  private async startConsumer() {
+    log.info(PRE, 'startConsumer()')
+    this.puppetChannel?.consume(
+      `${this.token}-to-client`,
+      (msg) => void MqManager.consumption(msg, this.puppetChannel),
+      {
+        consumerTag: 'puppetConsumer',
+      },
+    )
+  }
+
+  public sendToServer(message: MqSendMessage) {
+    log.info(PRE, `sendToServer(${JSON.stringify(message)})`)
+    this.puppetChannel?.sendMessageToQueue(
+      `${this.token}-to-server`,
+      Buffer.from(JSON.stringify(message)),
+      {
+        timestamp: Date.now(),
+        appId: this.token,
+        expiration: 10 * MINUTE,
+      },
+    )
+  }
+
+  private handleEvent(eventType: MqEventType, data: string) {
+    log.info(PRE, `handleEvent(${eventType}, ${data})`)
+    switch (eventType) {
+      case MqEventType.dong:
+        this.emit('dong', JSON.parse(data))
+        break
+      default:
+        log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
+    }
+  }
+
+  private async prepareQueue(channel: AmqpChannelService) {
+    if (!channel) {
+      log.warn(PRE, `prepare() need channel`)
+      return
+    }
+    await channel.initMetaConfigure({
+      queueList: [
+        {
+          name: `${this.token}-to-server`,
+          options: {
+            arguments: Object({
+              'x-queue-type': 'quorum',
+              'x-expires': 10 * MINUTE,
+            }),
+          },
+        },
+        {
+          name: `${this.token}-to-client`,
+          options: {
+            arguments: Object({
+              'x-queue-type': 'quorum',
+              'x-expires': 10 * MINUTE,
+            }),
+          },
+        },
+      ],
+    })
+  }
+}
