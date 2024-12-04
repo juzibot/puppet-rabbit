@@ -108,6 +108,14 @@ class PuppetRabbit extends PUPPET.Puppet {
     return data as PUPPET.payloads.Sayable
   }
 
+  override async postPublish(payload: PUPPET.payloads.PostClient) {
+    const data = await this.mqManager.sendToServer({
+      commandType: MqCommandType.postPublish,
+      data: JSON.stringify(payload),
+    })
+    return data.postId as string
+  }
+
   initEvents() {
     this.mqManager
       .on('dong', (data: PUPPET.payloads.EventDong) => {

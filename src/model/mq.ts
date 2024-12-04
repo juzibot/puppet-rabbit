@@ -25,6 +25,7 @@ export enum MqCommandType {
   postSearch = 'postSearch',
   postPayload = 'postPayload',
   postPayloadSayable = 'postPayloadSayable',
+  postPublish = 'postPublish',
 }
 
 export enum MqEventType {

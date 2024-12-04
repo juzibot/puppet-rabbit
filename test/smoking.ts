@@ -69,4 +69,22 @@ async function onLogin(payload: PUPPET.payloads.EventLogin) {
   console.log(response.response)
   const commentPayload = await puppet.postPayload(response.response[0])
   console.log(commentPayload)
+
+  const postClient: PUPPET.payloads.PostClient = {
+    rootId: list[0],
+    parentId: list[0],
+    sayableList: [
+      {
+        type: 'Text',
+        payload: {
+          mentions: [],
+          text: 'hello world',
+        },
+      },
+    ],
+  }
+  const newCommentId = await puppet.postPublish(postClient)
+  console.log('new comment', newCommentId)
+  const newComment = await puppet.postPayload(newCommentId)
+  console.log(newComment)
 }
