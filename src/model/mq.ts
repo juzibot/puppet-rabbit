@@ -1,5 +1,5 @@
 export interface MqSendMessage {
-  traceId: string
+  traceId?: string
   commandType: MqCommandType
   data: string
 }
@@ -22,10 +22,14 @@ export enum MqCommandType {
   start = 'start',
   ding = 'ding',
   contactPayload = 'contactPayload',
+  postSearch = 'postSearch',
+  postPayload = 'postPayload',
+  postPayloadSayable = 'postPayloadSayable',
 }
 
 export enum MqEventType {
   dong = 'dong',
+  login = 'login',
 }
 
 export interface MqCommandResponseWaiter {

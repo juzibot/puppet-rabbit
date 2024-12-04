@@ -17,6 +17,7 @@ import {
   getTokenQueueName,
   ServerExchangeName,
 } from './config.js'
+import { v4 } from 'uuid'
 
 const PRE = 'MqManager'
 
@@ -50,7 +51,7 @@ export class MqManager extends EventEmitter {
     msg: ConsumeMessage | null,
     channel: AmqpChannelService | undefined,
   ) {
-    log.info(PRE, msg?.content.toString(), channel?.instanceName)
+    log.info(PRE, `consuming content: ${msg?.content.toString()}`)
     const messageString = msg?.content.toString()
     if (!messageString) {
       await channel?.ackMessage(msg!)
@@ -75,7 +76,7 @@ export class MqManager extends EventEmitter {
         this.Instance.handleEvent(message.eventType!, message.data)
       }
     } catch (e) {
-      log.error(PRE, `consumption() error: ${e}`)
+      log.error(PRE, `consumption() error: ${e.stack}`)
     }
     await channel?.ackMessage(msg!)
   }
@@ -239,7 +240,10 @@ export class MqManager extends EventEmitter {
     )
   }
 
-  public sendToServer(message: MqSendMessage) {
+  public async sendToServer(message: MqSendMessage) {
+    if (!message.traceId) {
+      message.traceId = v4()
+    }
     log.info(PRE, `sendToServer(${JSON.stringify(message)})`)
     this.puppetChannel?.sendMessageToExchange(
       'tiktok.message.to.server',
@@ -251,6 +255,32 @@ export class MqManager extends EventEmitter {
         expiration: 10 * MINUTE,
       },
     )
+    return new Promise<any>((resolve, reject) => {
+      const waiter: MqCommandResponseWaiter = {
+        resolver: resolve,
+        rejector: reject,
+        traceId: message.traceId!,
+        timer: setTimeout(() => {
+          reject(
+            new Error(`async request timeout, traceId: ${message.traceId}`),
+          )
+        }, 1 * MINUTE),
+      }
+      MqManager.MqCommandResponsePool.set(message.traceId!, waiter)
+    })
+      .then((data) => {
+        log.info(PRE, `handleResponse(${JSON.stringify(data)})`)
+        return data
+      })
+      .finally(() => {
+        const waiterInPool = MqManager.MqCommandResponsePool.get(
+          message.traceId!,
+        )
+        if (waiterInPool) {
+          clearTimeout(waiterInPool.timer)
+          MqManager.MqCommandResponsePool.delete(message.traceId!)
+        }
+      })
   }
 
   private handleEvent(eventType: MqEventType, data: string) {
@@ -258,6 +288,9 @@ export class MqManager extends EventEmitter {
     switch (eventType) {
       case MqEventType.dong:
         this.emit('dong', JSON.parse(data))
+        break
+      case MqEventType.login:
+        this.emit('login', JSON.parse(data))
         break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
