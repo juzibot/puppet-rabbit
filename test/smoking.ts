@@ -23,7 +23,12 @@ async function onLogin(payload: PUPPET.payloads.EventLogin) {
   const pagination = {} as any
   const list: string[] = []
   while (true) {
-    const response = await puppet.postSearch({}, pagination)
+    const response = await puppet.postSearch(
+      {
+        rootId: '',
+      },
+      pagination,
+    )
     list.push(...response.response)
     if (!response.nextPageToken) {
       break
@@ -34,4 +39,34 @@ async function onLogin(payload: PUPPET.payloads.EventLogin) {
   console.log(list)
   const postPayload = await puppet.postPayload(list[0])
   console.log(postPayload)
+
+  const paginationComment = {} as any
+  const commentList: string[] = []
+  while (true) {
+    const response = await puppet.postSearch(
+      {
+        rootId: postPayload.id!,
+      },
+      paginationComment,
+    )
+    commentList.push(...response.response)
+    if (!response.nextPageToken) {
+      break
+    } else {
+      paginationComment.pageToken = response.nextPageToken
+    }
+  }
+  console.log('comment')
+  console.log(commentList)
+
+  const response = await puppet.postSearch(
+    {
+      rootId: postPayload.id!,
+      parentId: '7438797747752338232',
+    },
+    paginationComment,
+  )
+  console.log(response.response)
+  const commentPayload = await puppet.postPayload(response.response[0])
+  console.log(commentPayload)
 }

@@ -64,6 +64,7 @@ export class MqManager extends EventEmitter {
         const waiter = this.MqCommandResponsePool.get(message.traceId)
         if (!waiter) {
           log.warn(PRE, `MqCommandResponsePool Not Found ${message.traceId}`)
+          await channel?.ackMessage(msg!)
           return
         }
         if (message.code) {
