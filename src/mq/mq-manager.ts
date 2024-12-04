@@ -12,6 +12,11 @@ import {
   MqSendMessage,
 } from '../model/mq.js'
 import EventEmitter from 'events'
+import {
+  ClientExchangeName,
+  getTokenQueueName,
+  ServerExchangeName,
+} from './config.js'
 
 const PRE = 'MqManager'
 
@@ -92,6 +97,7 @@ export class MqManager extends EventEmitter {
     await this.initConnect()
     this.connected = true
     await this.initChannel()
+    await this.startConsumer()
   }
 
   private async initConnect() {
@@ -193,7 +199,7 @@ export class MqManager extends EventEmitter {
     try {
       await sleep(MINUTE)
       this.puppetChannel = await this.createChannelService(10)
-      await this.startConsumer
+      await this.startConsumer()
     } catch (e) {
       log.error(PRE, `reconnectChannel(}) Reconnect MQ Service Failed: ${e}`)
       return this.reconnectChannel()
@@ -225,7 +231,7 @@ export class MqManager extends EventEmitter {
   private async startConsumer() {
     log.info(PRE, 'startConsumer()')
     this.puppetChannel?.consume(
-      `${this.token}-to-client`,
+      getTokenQueueName(this.token!),
       (msg) => void MqManager.consumption(msg, this.puppetChannel),
       {
         consumerTag: 'puppetConsumer',
@@ -235,8 +241,9 @@ export class MqManager extends EventEmitter {
 
   public sendToServer(message: MqSendMessage) {
     log.info(PRE, `sendToServer(${JSON.stringify(message)})`)
-    this.puppetChannel?.sendMessageToQueue(
-      `${this.token}-to-server`,
+    this.puppetChannel?.sendMessageToExchange(
+      'tiktok.message.to.server',
+      'command',
       Buffer.from(JSON.stringify(message)),
       {
         timestamp: Date.now(),
@@ -265,22 +272,40 @@ export class MqManager extends EventEmitter {
     await channel.initMetaConfigure({
       queueList: [
         {
-          name: `${this.token}-to-server`,
+          name: getTokenQueueName(this.token!),
           options: {
             arguments: Object({
               'x-queue-type': 'quorum',
-              'x-expires': 10 * MINUTE,
+            }),
+          },
+        },
+      ],
+      exchangeList: [
+        {
+          name: ServerExchangeName,
+          type: 'direct',
+          options: {
+            arguments: Object({
+              'x-queue-type': 'quorum',
             }),
           },
         },
         {
-          name: `${this.token}-to-client`,
+          name: ClientExchangeName,
+          type: 'direct',
           options: {
             arguments: Object({
               'x-queue-type': 'quorum',
-              'x-expires': 10 * MINUTE,
             }),
           },
+        },
+      ],
+      bindList: [
+        {
+          type: 'qte',
+          fromSourceName: getTokenQueueName(this.token!),
+          targetSourceName: ClientExchangeName,
+          key: this.token!,
         },
       ],
     })
