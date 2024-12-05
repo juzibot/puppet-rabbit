@@ -19,6 +19,7 @@ class PuppetRabbit extends PUPPET.Puppet {
     if (!options.mqUri || !options.token) {
       throw new Error(`PuppetRabbit need mqUri and token`)
     }
+    this.initEvents()
   }
 
   override name() {
@@ -32,8 +33,6 @@ class PuppetRabbit extends PUPPET.Puppet {
   override async onStart(): Promise<void> {
     log.verbose(PRE, 'onStart()')
     await this.mqManager.init(this.options.token, this.options.mqUri)
-
-    this.initEvents()
 
     await this.mqManager.sendToServer({
       commandType: MqCommandType.start,
@@ -149,6 +148,18 @@ class PuppetRabbit extends PUPPET.Puppet {
       })
       .on('login', (data: PUPPET.payloads.EventLogin) => {
         this.emit('login', data)
+      })
+      .on('post-comment', (data: PUPPET.payloads.EventPostComment) => {
+        this.emit('post-comment', data)
+      })
+      .on('login-url', (data: PUPPET.payloads.EventLoginUrl) => {
+        this.emit('login-url', data)
+      })
+      .on('dirty', (data: PUPPET.payloads.EventDirty) => {
+        this.emit('dirty', data)
+      })
+      .on('logout', (data: PUPPET.payloads.EventLogout) => {
+        this.emit('logout', data)
       })
   }
 

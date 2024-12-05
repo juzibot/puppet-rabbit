@@ -294,10 +294,10 @@ export class MqManager extends EventEmitter {
         this.emit('login', JSON.parse(data))
         break
       case MqEventType.postComment:
-        this.emit('postComment', JSON.parse(data))
+        this.emit('post-comment', JSON.parse(data))
         break
       case MqEventType.loginUrl:
-        this.emit('loginUrl', JSON.parse(data))
+        this.emit('login-url', JSON.parse(data))
         break
       case MqEventType.dirty:
         this.emit('dirty', JSON.parse(data))
