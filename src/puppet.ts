@@ -2,6 +2,7 @@ import * as PUPPET from '@juzi/wechaty-puppet'
 import { MqManager } from './mq/mq-manager.js'
 import { log } from '@juzi/wechaty-puppet'
 import { MqCommandType } from './model/mq.js'
+import { FileBox, FileBoxInterface } from 'file-box'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
   mqUri?: string
@@ -44,6 +45,14 @@ class PuppetRabbit extends PUPPET.Puppet {
     log.verbose(PRE, 'onStop()')
   }
 
+  override async contactList() {
+    return []
+  }
+
+  override async roomList() {
+    return []
+  }
+
   override async contactRawPayload(
     id: string,
   ): Promise<PUPPET.payloads.Contact> {
@@ -62,6 +71,23 @@ class PuppetRabbit extends PUPPET.Puppet {
     payload: PUPPET.payloads.Contact,
   ): Promise<PUPPET.payloads.Contact> {
     return payload
+  }
+  override async contactAvatar(contactId: string, fileBox?: FileBoxInterface) {
+    if (fileBox) {
+      throw new Error('not supported')
+    }
+    const contactPayload = await this.contactPayload(contactId)
+    return FileBox.fromUrl(contactPayload.avatar) as any
+  }
+
+  override async dirtyPayload(type: PUPPET.types.Dirty, id: string) {
+    await this.mqManager.sendToServer({
+      commandType: MqCommandType.dirtyPayload,
+      data: JSON.stringify({
+        type,
+        id,
+      }),
+    })
   }
 
   override async postSearch(

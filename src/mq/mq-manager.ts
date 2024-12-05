@@ -77,7 +77,7 @@ export class MqManager extends EventEmitter {
         this.Instance.handleEvent(message.eventType!, message.data)
       }
     } catch (e) {
-      log.error(PRE, `consumption() error: ${e.stack}`)
+      log.error(PRE, `consumption() error: ${(e as Error).stack}`)
     }
     await channel?.ackMessage(msg!)
   }
@@ -89,7 +89,7 @@ export class MqManager extends EventEmitter {
         throw new Error(`init() need token and mqUri`)
       }
       // no idea why have to add default
-      this.puppetConnection = Onirii.default.createAmqpConnect(
+      this.puppetConnection = (Onirii as any).default.createAmqpConnect(
         `puppet-${token}-${Date.now()}`,
         mqUri,
       )
@@ -292,6 +292,18 @@ export class MqManager extends EventEmitter {
         break
       case MqEventType.login:
         this.emit('login', JSON.parse(data))
+        break
+      case MqEventType.postComment:
+        this.emit('postComment', JSON.parse(data))
+        break
+      case MqEventType.loginUrl:
+        this.emit('loginUrl', JSON.parse(data))
+        break
+      case MqEventType.dirty:
+        this.emit('dirty', JSON.parse(data))
+        break
+      case MqEventType.logout:
+        this.emit('logout', JSON.parse(data))
         break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)

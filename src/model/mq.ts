@@ -26,11 +26,16 @@ export enum MqCommandType {
   postPayload = 'postPayload',
   postPayloadSayable = 'postPayloadSayable',
   postPublish = 'postPublish',
+  dirtyPayload = 'dirtyPayload',
 }
 
 export enum MqEventType {
   dong = 'dong',
   login = 'login',
+  loginUrl = 'loginUrl',
+  postComment = 'postComment',
+  dirty = 'dirty',
+  logout = 'logout',
 }
 
 export interface MqCommandResponseWaiter {

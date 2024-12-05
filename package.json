@@ -1,5 +1,5 @@
 {
-  "name": "puppet-rabbit",
+  "name": "@juzi/puppet-rabbit",
   "version": "1.0.0",
   "type": "module",
   "description": "",
@@ -11,6 +11,10 @@
     }
   },
   "scripts": {
+    "dist": "npm run clean && npm run build && npm run dist:commonjs",
+    "build": "tsc && tsc -p tsconfig.cjs.json",
+    "dist:commonjs": "jq -n \"{ type: \\\"commonjs\\\" }\" > dist/cjs/package.json",
+    "clean": "rm -fr dist/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,6 +23,7 @@
   "dependencies": {
     "@juzi/wechaty-puppet": "1.0.95",
     "amqplib": "^0.7.1",
+    "file-box": "npm:@juzi/file-box@^1.7.9",
     "onirii": "^1.3.6",
     "uuid": "^11.0.3"
   },
