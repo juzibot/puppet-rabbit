@@ -14,6 +14,8 @@ const PRE = 'PuppetRabbit'
 class PuppetRabbit extends PUPPET.Puppet {
   private readonly mqManager = MqManager.Instance
 
+  private heartbeatTimer: NodeJS.Timer | undefined
+
   constructor(public override options: PuppetRabbitOptions = {}) {
     super(options)
     if (!options.mqUri || !options.token) {
@@ -38,10 +40,27 @@ class PuppetRabbit extends PUPPET.Puppet {
       commandType: MqCommandType.start,
       data: '{}',
     })
+
+    this.startHeartbeat()
   }
 
   override async onStop(): Promise<void> {
     log.verbose(PRE, 'onStop()')
+    this.stopHeartbeat()
+  }
+
+  startHeartbeat() {
+    this.stopHeartbeat()
+    this.heartbeatTimer = setInterval(async () => {
+      void this.ding('heartbeat')
+    }, 10 * 1000)
+  }
+
+  stopHeartbeat() {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer)
+      this.heartbeatTimer = undefined
+    }
   }
 
   override async contactList() {
