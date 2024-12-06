@@ -53,7 +53,7 @@ class PuppetRabbit extends PUPPET.Puppet {
     this.stopHeartbeat()
     this.heartbeatTimer = setInterval(async () => {
       void this.ding('heartbeat')
-    }, 10 * 1000)
+    }, 30 * 1000)
   }
 
   stopHeartbeat() {
