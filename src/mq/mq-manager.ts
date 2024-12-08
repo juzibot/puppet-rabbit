@@ -89,7 +89,8 @@ export class MqManager extends EventEmitter {
         throw new Error(`init() need token and mqUri`)
       }
       // no idea why have to add default
-      this.puppetConnection = (Onirii as any).default.createAmqpConnect(
+      const creator = Onirii.createAmqpConnect || (Onirii as any).default.createAmqpConnect
+      this.puppetConnection = creator(
         `puppet-${token}-${Date.now()}`,
         mqUri,
       )
