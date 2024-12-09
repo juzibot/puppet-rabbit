@@ -175,18 +175,21 @@ class PuppetRabbit extends PUPPET.Puppet {
         this.emit('dong', data)
       })
       .on('login', (data: PUPPET.payloads.EventLogin) => {
+        this.__currentUserId = data.contactId
         this.emit('login', data)
       })
       .on('post-comment', (data: PUPPET.payloads.EventPostComment) => {
         this.emit('post-comment', data)
       })
       .on('login-url', (data: PUPPET.payloads.EventLoginUrl) => {
+        this.__currentUserId = undefined
         this.emit('login-url', data)
       })
       .on('dirty', (data: PUPPET.payloads.EventDirty) => {
         this.emit('dirty', data)
       })
       .on('logout', (data: PUPPET.payloads.EventLogout) => {
+        this.__currentUserId = undefined
         this.emit('logout', data)
       }).on('ready', (data: PUPPET.payloads.EventReady) => {
         this.emit('ready', data)
