@@ -36,6 +36,7 @@ export enum MqEventType {
   postComment = 'postComment',
   dirty = 'dirty',
   logout = 'logout',
+  ready = 'ready',
 }
 
 export interface MqCommandResponseWaiter {

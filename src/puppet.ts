@@ -188,6 +188,8 @@ class PuppetRabbit extends PUPPET.Puppet {
       })
       .on('logout', (data: PUPPET.payloads.EventLogout) => {
         this.emit('logout', data)
+      }).on('ready', (data: PUPPET.payloads.EventReady) => {
+        this.emit('ready', data)
       })
   }
 

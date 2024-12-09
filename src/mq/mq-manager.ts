@@ -306,6 +306,9 @@ export class MqManager extends EventEmitter {
       case MqEventType.logout:
         this.emit('logout', JSON.parse(data))
         break
+      case MqEventType.ready:
+        this.emit('ready', JSON.parse(data))
+        break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
     }
