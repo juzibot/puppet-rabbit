@@ -63,6 +63,15 @@ class PuppetRabbit extends PUPPET.Puppet {
     }
   }
 
+  override async ding(msg: string) {
+    await this.mqManager.sendToServer({
+      commandType: MqCommandType.ding,
+      data: JSON.stringify({
+        data: msg,
+      }),
+    })
+  }
+
   override async contactList() {
     return []
   }
