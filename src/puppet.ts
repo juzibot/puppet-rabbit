@@ -169,6 +169,27 @@ class PuppetRabbit extends PUPPET.Puppet {
     return data.postId as string
   }
 
+  override async postUnpublish(id: string) {
+    return this.mqManager.sendToServer({
+      commandType: MqCommandType.postUnpublish,
+      data: JSON.stringify({
+        postId: id,
+      }),
+    })
+  }
+
+  override async tap(postId: string, type: PUPPET.types.Tap = PUPPET.types.Tap.Like, tap = true) {
+    await this.mqManager.sendToServer({
+      commandType: MqCommandType.tap,
+      data: JSON.stringify({
+        postId,
+        type,
+        tap,
+      }),
+    })
+    return tap
+  }
+
   initEvents() {
     this.mqManager
       .on('dong', (data: PUPPET.payloads.EventDong) => {
