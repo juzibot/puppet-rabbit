@@ -51,7 +51,7 @@ export class MqManager extends EventEmitter {
     msg: ConsumeMessage | null,
     channel: AmqpChannelService | undefined,
   ) {
-    log.info(PRE, `consuming content: ${msg?.content.toString()}`)
+    log.verbose(PRE, `consuming content: ${msg?.content.toString()}`)
     const messageString = msg?.content.toString()
     if (!messageString) {
       await channel?.ackMessage(msg!)
@@ -246,7 +246,7 @@ export class MqManager extends EventEmitter {
     if (!message.traceId) {
       message.traceId = v4()
     }
-    log.info(PRE, `sendToServer(${JSON.stringify(message)})`)
+    log.verbose(PRE, `sendToServer(${JSON.stringify(message)})`)
     this.puppetChannel?.sendMessageToExchange(
       'tiktok.message.to.server',
       'command',
@@ -271,7 +271,7 @@ export class MqManager extends EventEmitter {
       MqManager.MqCommandResponsePool.set(message.traceId!, waiter)
     })
       .then((data) => {
-        log.info(PRE, `handleResponse(${JSON.stringify(data)})`)
+        log.verbose(PRE, `handleResponse(${JSON.stringify(data)})`)
         return data
       })
       .finally(() => {
@@ -286,7 +286,7 @@ export class MqManager extends EventEmitter {
   }
 
   private handleEvent(eventType: MqEventType, data: string) {
-    log.info(PRE, `handleEvent(${eventType}, ${data})`)
+    log.verbose(PRE, `handleEvent(${eventType}, ${data})`)
     switch (eventType) {
       case MqEventType.dong:
         this.emit('dong', JSON.parse(data))
