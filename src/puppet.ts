@@ -190,10 +190,18 @@ class PuppetRabbit extends PUPPET.Puppet {
     return tap
   }
 
-  override async logout() {
+  override async logout(reason?: string, event = false) {
+    await super.logout(reason)
+
+    if (event) {
+      return
+    }
+
     return this.mqManager.sendToServer({
       commandType: MqCommandType.logout,
-      data: JSON.stringify({}),
+      data: JSON.stringify({
+        reason,
+      }),
     })
   }
 
@@ -217,8 +225,11 @@ class PuppetRabbit extends PUPPET.Puppet {
         this.emit('dirty', data)
       })
       .on('logout', (data: PUPPET.payloads.EventLogout) => {
-        this.__currentUserId = undefined
-        this.emit('logout', data)
+        this.logout(data.data, true).catch(e =>
+          log.error('PuppetService', 'onGrpcStreamEvent() this.logout() rejection %s',
+            (e as Error).message,
+          )
+        )
       }).on('ready', (data: PUPPET.payloads.EventReady) => {
         this.emit('ready', data)
       })
