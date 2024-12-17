@@ -29,6 +29,7 @@ export enum MqCommandType {
   dirtyPayload = 'dirtyPayload',
   postUnpublish = 'postUnpublish',
   tap = 'tap',
+  logout = 'logout',
 }
 
 export enum MqEventType {

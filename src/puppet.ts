@@ -190,6 +190,13 @@ class PuppetRabbit extends PUPPET.Puppet {
     return tap
   }
 
+  override async logout() {
+    return this.mqManager.sendToServer({
+      commandType: MqCommandType.logout,
+      data: JSON.stringify({}),
+    })
+  }
+
   initEvents() {
     this.mqManager
       .on('dong', (data: PUPPET.payloads.EventDong) => {
