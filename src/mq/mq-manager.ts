@@ -292,6 +292,7 @@ export class MqManager extends EventEmitter {
         this.emit('dong', JSON.parse(data))
         break
       case MqEventType.login:
+        log.info(PRE, `receive login event: ${data}`)
         this.emit('login', JSON.parse(data))
         break
       case MqEventType.postComment:
@@ -304,6 +305,7 @@ export class MqManager extends EventEmitter {
         this.emit('dirty', JSON.parse(data))
         break
       case MqEventType.logout:
+        log.info(PRE, `receive logout event: ${data}`)
         this.emit('logout', JSON.parse(data))
         break
       case MqEventType.ready:
