@@ -13,9 +13,9 @@ import {
 } from '../model/mq.js'
 import EventEmitter from 'events'
 import {
-  ClientExchangeName,
+  getClientExchangeName,
+  getServerExchangeName,
   getTokenQueueName,
-  ServerExchangeName,
 } from './config.js'
 import { v4 } from 'uuid'
 
@@ -41,6 +41,7 @@ export class MqManager extends EventEmitter {
   private restartingChannel = false
 
   private token: string | undefined
+  private exchangeBaseName: string | undefined
 
   private static MqCommandResponsePool = new Map<
     string,
@@ -82,7 +83,8 @@ export class MqManager extends EventEmitter {
     await channel?.ackMessage(msg!)
   }
 
-  public async init(token?: string, mqUri?: string) {
+  public async init(option: {token: string, mqUri: string, exchangeBaseName: string}) {
+    const { token, mqUri, exchangeBaseName } = option
     log.info(PRE, `init(${token})`)
     if (!this.puppetConnection) {
       if (!(token && mqUri)) {
@@ -95,6 +97,7 @@ export class MqManager extends EventEmitter {
         mqUri,
       )
       this.token = token
+      this.exchangeBaseName = exchangeBaseName
     }
 
     await this.initConnect()
@@ -334,7 +337,7 @@ export class MqManager extends EventEmitter {
       ],
       exchangeList: [
         {
-          name: ServerExchangeName,
+          name: getServerExchangeName(this.exchangeBaseName!),
           type: 'direct',
           options: {
             arguments: Object({
@@ -343,7 +346,7 @@ export class MqManager extends EventEmitter {
           },
         },
         {
-          name: ClientExchangeName,
+          name: getClientExchangeName(this.exchangeBaseName!),
           type: 'direct',
           options: {
             arguments: Object({
@@ -356,7 +359,7 @@ export class MqManager extends EventEmitter {
         {
           type: 'qte',
           fromSourceName: getTokenQueueName(this.token!),
-          targetSourceName: ClientExchangeName,
+          targetSourceName: getClientExchangeName(this.exchangeBaseName!),
           key: this.token!,
         },
       ],

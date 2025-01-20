@@ -5,8 +5,9 @@ import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface } from 'file-box'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
-  mqUri?: string
-  token?: string
+  mqUri: string
+  exchangeBaseName: string
+  token: string
 }
 
 const PRE = 'PuppetRabbit'
@@ -16,7 +17,7 @@ class PuppetRabbit extends PUPPET.Puppet {
 
   private heartbeatTimer: NodeJS.Timer | undefined
 
-  constructor(public override options: PuppetRabbitOptions = {}) {
+  constructor(public override options: PuppetRabbitOptions) {
     super(options)
     if (!options.mqUri || !options.token) {
       throw new Error(`PuppetRabbit need mqUri and token`)
@@ -34,7 +35,11 @@ class PuppetRabbit extends PUPPET.Puppet {
 
   override async onStart(): Promise<void> {
     log.verbose(PRE, 'onStart()')
-    await this.mqManager.init(this.options.token, this.options.mqUri)
+    await this.mqManager.init({
+      token: this.options.token,
+      mqUri: this.options.mqUri,
+      exchangeBaseName: this.options.exchangeBaseName,
+    })
 
     await this.mqManager.sendToServer({
       commandType: MqCommandType.start,
