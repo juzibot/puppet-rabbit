@@ -8,6 +8,10 @@
     ".": {
       "import": "./dist/esm/src/mod.js",
       "require": "./dist/cjs/src/mod.js"
+    },
+    "./dto": {
+      "import": "./dist/esm/src/dto.js",
+      "require": "./dist/cjs/src/dto.js"
     }
   },
   "scripts": {
