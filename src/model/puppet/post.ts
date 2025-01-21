@@ -1,4 +1,4 @@
-import { filters, payloads, types } from "@juzi/wechaty-puppet"
+import { filters, payloads } from "@juzi/wechaty-puppet"
 
 export type PostPayloadRequest = {
   postId: string,
