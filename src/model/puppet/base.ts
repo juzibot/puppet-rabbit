@@ -7,3 +7,7 @@ export type DingRequest = {
 }
 
 export type DingResponse = {}
+
+export type StartRequest = {}
+
+export type StartResponse = {}

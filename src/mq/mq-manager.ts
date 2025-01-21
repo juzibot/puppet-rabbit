@@ -6,9 +6,12 @@ import { AmqpConnectService } from 'onirii/lib/service/amqp/amqp-connect-service
 import { sleep, SECOND, MINUTE } from '../util/time.js'
 import {
   MqCommandResponseWaiter,
+  MqCommandType,
   MqEventType,
   MqMessageType,
   MqReceiveMessage,
+  MqRequest,
+  MqResponse,
   MqSendMessage,
 } from '../model/mq.js'
 import EventEmitter from 'events'
@@ -42,6 +45,7 @@ export class MqManager extends EventEmitter {
 
   private token: string | undefined
   private exchangeBaseName: string | undefined
+  private mqUri: string | undefined
 
   private static MqCommandResponsePool = new Map<
     string,
@@ -98,6 +102,7 @@ export class MqManager extends EventEmitter {
       )
       this.token = token
       this.exchangeBaseName = exchangeBaseName
+      this.mqUri = mqUri
     }
 
     await this.initConnect()
@@ -165,7 +170,11 @@ export class MqManager extends EventEmitter {
     )
 
     try {
-      await this.init()
+      await this.init({
+        token: this.token!,
+        mqUri: this.mqUri!,
+        exchangeBaseName: this.exchangeBaseName!,
+      })
       await this.startConsume()
     } catch (e) {
       log.error(
@@ -251,7 +260,7 @@ export class MqManager extends EventEmitter {
     }
     log.verbose(PRE, `sendToServer(${JSON.stringify(message)})`)
     this.puppetChannel?.sendMessageToExchange(
-      'tiktok.message.to.server',
+      getServerExchangeName(this.exchangeBaseName!),
       'command',
       Buffer.from(JSON.stringify(message)),
       {
@@ -286,6 +295,16 @@ export class MqManager extends EventEmitter {
           MqManager.MqCommandResponsePool.delete(message.traceId!)
         }
       })
+  }
+
+  public async sendMqCommand<T extends MqCommandType>(command: MqRequest<T>): Promise<MqResponse<T>> {
+    const message: MqSendMessage = {
+      commandType: command.commandType,
+      traceId: command.traceId,
+      data: JSON.stringify(command.data),
+    }
+    const response = await this.sendToServer(message) as MqResponse<T>
+    return response
   }
 
   private handleEvent(eventType: MqEventType, data: string) {

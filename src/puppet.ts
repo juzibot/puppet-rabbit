@@ -3,6 +3,8 @@ import { MqManager } from './mq/mq-manager.js'
 import { log } from '@juzi/wechaty-puppet'
 import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface } from 'file-box'
+import { ContactListResponse } from './dto.js'
+import { stringifyFileBox } from './util/file.js'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
   mqUri: string
@@ -68,6 +70,8 @@ class PuppetRabbit extends PUPPET.Puppet {
     }
   }
 
+  // base
+
   override async ding(msg: string) {
     await this.mqManager.sendToServer({
       commandType: MqCommandType.ding,
@@ -77,12 +81,24 @@ class PuppetRabbit extends PUPPET.Puppet {
     })
   }
 
-  override async contactList() {
-    return []
+  override async dirtyPayload(type: PUPPET.types.Dirty, id: string) {
+    await this.mqManager.sendToServer({
+      commandType: MqCommandType.dirtyPayload,
+      data: JSON.stringify({
+        type,
+        id,
+      }),
+    })
   }
 
-  override async roomList() {
-    return []
+  // contact
+
+  override async contactList() {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.contactList,
+      data: {},
+    }) as ContactListResponse
+    return data.contactIds
   }
 
   override async contactRawPayload(
@@ -104,6 +120,7 @@ class PuppetRabbit extends PUPPET.Puppet {
   ): Promise<PUPPET.payloads.Contact> {
     return payload
   }
+
   override async contactAvatar(contactId: string, fileBox?: FileBoxInterface) {
     if (fileBox) {
       throw new Error('not supported')
@@ -112,15 +129,169 @@ class PuppetRabbit extends PUPPET.Puppet {
     return FileBox.fromUrl(contactPayload.avatar) as any
   }
 
-  override async dirtyPayload(type: PUPPET.types.Dirty, id: string) {
-    await this.mqManager.sendToServer({
-      commandType: MqCommandType.dirtyPayload,
+  // message
+
+  override async conversationReadMark(conversationId: string, hasRead?: boolean) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.conversationReadMark,
+      data: {
+        conversationId,
+        hasRead,
+      },
+    })
+    return response.hasRead
+  }
+
+  // message send
+
+  override async messageSendText(conversationId: string, text: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendText,
+      data: {
+        conversationId,
+        text,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendFile(conversationId: string, file: FileBoxInterface) {
+    const fileboxStr = stringifyFileBox(file)
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendFile,
+      data: {
+        conversationId,
+        fileFilebox: fileboxStr,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendMiniProgram(conversationId: string, miniProgram: PUPPET.payloads.MiniProgram) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendMiniProgram,
+      data: {
+        conversationId,
+        miniProgram,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendUrl(conversationId: string, url: PUPPET.payloads.UrlLink) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendUrl,
+      data: {
+        conversationId,
+        url,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendLocation(conversationId: string, location: PUPPET.payloads.Location) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendLocation,
+      data: {
+        conversationId,
+        location,
+      },
+    })
+    return response.messageId
+  }
+
+  // message payload
+
+
+  override async messageRawPayload(
+    id: string,
+  ): Promise<PUPPET.payloads.Message> {
+    // TODO: add local cache
+
+    const data = await this.mqManager.sendToServer({
+      commandType: MqCommandType.messagePayload,
       data: JSON.stringify({
-        type,
         id,
       }),
     })
+    return data as PUPPET.payloads.Message
   }
+
+  override async messageRawPayloadParser(
+    payload: PUPPET.payloads.Message,
+  ): Promise<PUPPET.payloads.Message> {
+    return payload
+  }
+  
+
+  override async messageImage(messageId: string, imageType: PUPPET.types.Image) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageImage,
+      data: {
+        messageId,
+        imageType,
+      },
+    })
+    return FileBox.fromJSON(response.imageFilebox)
+  }
+
+  override async messageFile(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageFile,
+      data: {
+        messageId,
+      },
+    })
+    return FileBox.fromJSON(response.fileFilebox)
+  }
+
+  override async messageUrl(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageUrl,
+      data: {
+        messageId,
+      },
+    })
+    return response.urlLink
+  }
+
+  override async messageLocation(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageLocation,
+      data: {
+        messageId,
+      },
+    })
+    return response.location
+  }
+
+  override async messageContact(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageContact,
+      data: {
+        messageId,
+      },
+    })
+    return response.contactId
+  }
+
+  override async messageMiniProgram(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageMiniProgram,
+      data: {
+        messageId,
+      },
+    })
+    return response.miniProgram
+  }
+
+  // room
+  
+  override async roomList() {
+    return []
+  }
+
+  // post
 
   override async postSearch(
     filter: PUPPET.filters.Post,

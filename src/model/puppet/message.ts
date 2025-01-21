@@ -139,7 +139,7 @@ export type MessageSendPostResponse = {
 export type MessageSendTextRequest = {
   conversationId: string,
   text: string,
-  option: types.MessageSendTextOptions,
+  option?: types.MessageSendTextOptions,
 }
 
 export type MessageSendTextResponse = {
