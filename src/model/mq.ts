@@ -1,3 +1,4 @@
+import { types } from "@juzi/wechaty-puppet"
 import * as PuppetDTO from "./puppet"
 
 export interface MqSendMessage {
@@ -9,7 +10,7 @@ export interface MqSendMessage {
 export interface MqReceiveMessage {
   traceId: string
   type: MqMessageType
-  eventType?: MqEventType
+  eventType?: types.PuppetEventName,
   data: string
   code?: number
   error?: string
@@ -50,16 +51,6 @@ export enum MqCommandType {
   postUnpublish = 'postUnpublish',
   tap = 'tap',
   logout = 'logout',
-}
-
-export enum MqEventType {
-  dong = 'dong',
-  login = 'login',
-  loginUrl = 'loginUrl',
-  postComment = 'postComment',
-  dirty = 'dirty',
-  logout = 'logout',
-  ready = 'ready',
 }
 
 export interface MqCommandResponseWaiter {

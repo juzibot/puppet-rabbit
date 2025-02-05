@@ -7,7 +7,6 @@ import { sleep, SECOND, MINUTE } from '../util/time.js'
 import {
   MqCommandResponseWaiter,
   MqCommandType,
-  MqEventType,
   MqMessageType,
   MqReceiveMessage,
   MqRequest,
