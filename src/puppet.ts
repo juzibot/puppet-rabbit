@@ -409,6 +409,9 @@ class PuppetRabbit extends PUPPET.Puppet {
       }).on('ready', (data: PUPPET.payloads.EventReady) => {
         this.emit('ready', data)
       })
+      .on('message', (data: PUPPET.payloads.EventMessage) => {
+        this.emit('message', data)
+      })
   }
 
   removeEvents() {

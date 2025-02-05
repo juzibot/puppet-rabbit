@@ -1,4 +1,4 @@
-import { log } from '@juzi/wechaty-puppet'
+import { log, types } from '@juzi/wechaty-puppet'
 import { ConsumeMessage } from 'amqplib'
 import Onirii from 'onirii'
 import { AmqpChannelService } from 'onirii/lib/service/amqp/amqp-channel-service'
@@ -307,31 +307,34 @@ export class MqManager extends EventEmitter {
     return response
   }
 
-  private handleEvent(eventType: MqEventType, data: string) {
+  private handleEvent(eventType: types.PuppetEventName, data: string) {
     log.verbose(PRE, `handleEvent(${eventType}, ${data})`)
     switch (eventType) {
-      case MqEventType.dong:
+      case 'dong':
         this.emit('dong', JSON.parse(data))
         break
-      case MqEventType.login:
+      case 'login':
         log.info(PRE, `receive login event: ${data}`)
         this.emit('login', JSON.parse(data))
         break
-      case MqEventType.postComment:
+      case 'post-comment':
         this.emit('post-comment', JSON.parse(data))
         break
-      case MqEventType.loginUrl:
+      case 'login-url':
         this.emit('login-url', JSON.parse(data))
         break
-      case MqEventType.dirty:
+      case 'dirty':
         this.emit('dirty', JSON.parse(data))
         break
-      case MqEventType.logout:
+      case 'logout':
         log.info(PRE, `receive logout event: ${data}`)
         this.emit('logout', JSON.parse(data))
         break
-      case MqEventType.ready:
+      case 'ready':
         this.emit('ready', JSON.parse(data))
+        break
+      case 'message':
+        this.emit('message', JSON.parse(data))
         break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
