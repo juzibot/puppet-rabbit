@@ -98,4 +98,6 @@ export type ContactPayloadRequest = {
   contactId: string,
 }
 
-export type ContactPayloadResponse = payloads.Contact
+export type ContactPayloadResponse = {
+  payload: payloads.Contact
+}

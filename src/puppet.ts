@@ -106,13 +106,13 @@ class PuppetRabbit extends PUPPET.Puppet {
   ): Promise<PUPPET.payloads.Contact> {
     // TODO: add local cache
 
-    const data = await this.mqManager.sendToServer({
+    const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.contactPayload,
-      data: JSON.stringify({
-        id,
-      }),
+      data: {
+        contactId: id,
+      },
     })
-    return data as PUPPET.payloads.Contact
+    return data.payload
   }
 
   override async contactRawPayloadParser(
@@ -208,13 +208,13 @@ class PuppetRabbit extends PUPPET.Puppet {
   ): Promise<PUPPET.payloads.Message> {
     // TODO: add local cache
 
-    const data = await this.mqManager.sendToServer({
+    const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messagePayload,
-      data: JSON.stringify({
-        id,
-      }),
+      data: {
+        messageId: id,
+      },
     })
-    return data as PUPPET.payloads.Message
+    return data.payload
   }
 
   override async messageRawPayloadParser(
