@@ -275,7 +275,7 @@ export class MqManager extends EventEmitter {
         traceId: message.traceId!,
         timer: setTimeout(() => {
           reject(
-            new Error(`async request timeout, traceId: ${message.traceId}`),
+            new Error(`async ${message.commandType} request timeout, traceId: ${message.traceId}`),
           )
         }, 1 * MINUTE),
       }
