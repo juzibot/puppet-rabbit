@@ -36,6 +36,8 @@ export enum MqCommandType {
   messageSendUrl = 'messageSendUrl',
   messageSendLocation = 'messageSendLocation',
 
+  messageRecall = 'messageRecall',
+
   messageImage = 'messageImage',
   messageFile = 'messageFile',
   messageUrl = 'messageUrl',
@@ -82,6 +84,8 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendUrl]: PuppetDTO.MessageSendUrlRequest
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationRequest
 
+  [MqCommandType.messageRecall]: PuppetDTO.MessageRecallRequest
+
   [MqCommandType.messageImage]: PuppetDTO.MessageImageRequest
   [MqCommandType.messageFile]: PuppetDTO.MessageFileRequest
   [MqCommandType.messageUrl]: PuppetDTO.MessageUrlRequest
@@ -103,6 +107,8 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendMiniProgram]: PuppetDTO.MessageSendMiniProgramResponse
   [MqCommandType.messageSendUrl]: PuppetDTO.MessageSendUrlResponse
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationResponse
+
+  [MqCommandType.messageRecall]: PuppetDTO.MessageRecallResponse
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageResponse
   [MqCommandType.messageFile]: PuppetDTO.MessageFileResponse

@@ -200,6 +200,16 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.messageId
   }
 
+  override async messageRecall(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageRecall,
+      data: {
+        messageId,
+      },
+    })
+    return response.result
+  }
+  
   // message payload
 
 
