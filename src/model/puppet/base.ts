@@ -1,3 +1,5 @@
+import { types } from "@juzi/wechaty-puppet"
+
 export type RefreshQRCodeRequest = {}
 
 export type RefreshQRCodeResponse = {}
@@ -11,3 +13,11 @@ export type DingResponse = {}
 export type StartRequest = {}
 
 export type StartResponse = {}
+
+export type DirtyPayloadRequest = {
+  data: string,
+  type: types.Dirty,
+}
+
+export type DirtyPayloadResponse = {}
+
