@@ -15,7 +15,7 @@ export type StartRequest = {}
 export type StartResponse = {}
 
 export type DirtyPayloadRequest = {
-  data: string,
+  id: string,
   type: types.Dirty,
 }
 
