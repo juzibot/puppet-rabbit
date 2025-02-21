@@ -44,7 +44,9 @@ export enum MqCommandType {
   messageLocation = 'messageLocation',
   messageContact = 'messageContact',
   messageMiniProgram = 'messageMiniProgram',
-  
+
+  friendshipPayload = 'friendshipPayload',
+
   postSearch = 'postSearch',
   postPayload = 'postPayload',
   postPayloadSayable = 'postPayloadSayable',
@@ -92,6 +94,8 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageLocation]: PuppetDTO.MessageLocationRequest
   [MqCommandType.messageContact]: PuppetDTO.MessageContactRequest
   [MqCommandType.messageMiniProgram]: PuppetDTO.MessageMiniProgramRequest
+
+  [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadRequest
 }
 
 export type PuppetResponseTypeMap = {
@@ -116,4 +120,6 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageLocation]: PuppetDTO.MessageLocationResponse
   [MqCommandType.messageContact]: PuppetDTO.MessageContactResponse
   [MqCommandType.messageMiniProgram]: PuppetDTO.MessageMiniProgramResponse
+
+  [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadResponse
 }

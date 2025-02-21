@@ -295,6 +295,24 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.miniProgram
   }
 
+  // friendship
+
+  override async friendshipRawPayload(friendshipId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.friendshipPayload,
+      data: {
+        friendshipId,
+      },
+    })
+    return response.payload
+  }
+
+  override async friendshipRawPayloadParser(
+    payload: PUPPET.payloads.Friendship,
+  ): Promise<PUPPET.payloads.Friendship> {
+    return payload
+  }
+
   // room
   
   override async roomList() {

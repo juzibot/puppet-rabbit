@@ -35,4 +35,6 @@ export type FriendshipPayloadRequest = {
   friendshipId: string,
 }
 
-export type FriendshipPayloadResponse = payloads.Friendship
+export type FriendshipPayloadResponse = {
+  payload: payloads.Friendship,
+}
