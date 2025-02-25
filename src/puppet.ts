@@ -434,11 +434,15 @@ class PuppetRabbit extends PUPPET.Puppet {
             (e as Error).message,
           )
         )
-      }).on('ready', (data: PUPPET.payloads.EventReady) => {
+      })
+      .on('ready', (data: PUPPET.payloads.EventReady) => {
         this.emit('ready', data)
       })
       .on('message', (data: PUPPET.payloads.EventMessage) => {
         this.emit('message', data)
+      })
+      .on('friendship', (data: PUPPET.payloads.EventFriendship) => {
+        this.emit('friendship', data)
       })
   }
 

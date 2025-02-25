@@ -335,6 +335,9 @@ export class MqManager extends EventEmitter {
       case 'message':
         this.emit('message', JSON.parse(data))
         break
+      case 'friendship':
+        this.emit('friendship', JSON.parse(data))
+        break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
     }
