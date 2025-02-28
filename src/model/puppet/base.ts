@@ -21,3 +21,8 @@ export type DirtyPayloadRequest = {
 
 export type DirtyPayloadResponse = {}
 
+export type LogoutRequest = {
+  reason?: string,
+}
+
+export type LogoutResponse = {}

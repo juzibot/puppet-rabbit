@@ -5,7 +5,7 @@ export type PostPayloadRequest = {
 }
 
 export type PostPayloadResponse = {
-  post: payloads.Post,
+  payload: payloads.Post,
 }
 
 export type PostPayloadSayableRequest = {

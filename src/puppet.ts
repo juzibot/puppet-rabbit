@@ -43,9 +43,9 @@ class PuppetRabbit extends PUPPET.Puppet {
       exchangeBaseName: this.options.exchangeBaseName,
     })
 
-    await this.mqManager.sendToServer({
+    await this.mqManager.sendMqCommand({
       commandType: MqCommandType.start,
-      data: '{}',
+      data: {},
     })
 
     this.startHeartbeat()
@@ -73,21 +73,21 @@ class PuppetRabbit extends PUPPET.Puppet {
   // base
 
   override async ding(msg: string) {
-    await this.mqManager.sendToServer({
+    await this.mqManager.sendMqCommand({
       commandType: MqCommandType.ding,
-      data: JSON.stringify({
+      data: {
         data: msg,
-      }),
+      }
     })
   }
 
   override async dirtyPayload(type: PUPPET.types.Dirty, id: string) {
-    await this.mqManager.sendToServer({
+    await this.mqManager.sendMqCommand({
       commandType: MqCommandType.dirtyPayload,
-      data: JSON.stringify({
+      data: {
         type,
         id,
-      }),
+      },
     })
   }
 
@@ -325,24 +325,24 @@ class PuppetRabbit extends PUPPET.Puppet {
     filter: PUPPET.filters.Post,
     pagination: PUPPET.filters.PaginationRequest,
   ): Promise<PUPPET.filters.PaginationResponse<string[]>> {
-    const data = await this.mqManager.sendToServer({
+    const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.postSearch,
-      data: JSON.stringify({
+      data: {
         filter,
         pagination,
-      }),
+      },
     })
-    return data as PUPPET.filters.PaginationResponse<string[]>
+    return data
   }
 
   override async postRawPayload(id: string): Promise<PUPPET.payloads.Post> {
-    const data = await this.mqManager.sendToServer({
+    const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.postPayload,
-      data: JSON.stringify({
-        id,
-      }),
+      data: {
+        postId: id,
+      },
     })
-    return data as PUPPET.payloads.Post
+    return data.payload
   }
 
   override async postRawPayloadParser(
@@ -355,41 +355,43 @@ class PuppetRabbit extends PUPPET.Puppet {
     postId: string,
     sayableId: string,
   ): Promise<PUPPET.payloads.Sayable> {
-    const data = await this.mqManager.sendToServer({
+    const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.postPayloadSayable,
-      data: JSON.stringify({
+      data: {
         postId,
         sayableId,
-      }),
+      },
     })
-    return data as PUPPET.payloads.Sayable
+    return data.sayable
   }
 
   override async postPublish(payload: PUPPET.payloads.PostClient) {
-    const data = await this.mqManager.sendToServer({
+    const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.postPublish,
-      data: JSON.stringify(payload),
+      data: {
+        post: payload,
+      },
     })
-    return data.postId as string
+    return data.postId
   }
 
   override async postUnpublish(id: string) {
-    return this.mqManager.sendToServer({
+    await this.mqManager.sendMqCommand({
       commandType: MqCommandType.postUnpublish,
-      data: JSON.stringify({
+      data: {
         postId: id,
-      }),
+      },
     })
   }
 
   override async tap(postId: string, type: PUPPET.types.Tap = PUPPET.types.Tap.Like, tap = true) {
-    await this.mqManager.sendToServer({
+    await this.mqManager.sendMqCommand({
       commandType: MqCommandType.tap,
-      data: JSON.stringify({
+      data: {
         postId,
         type,
         tap,
-      }),
+      },
     })
     return tap
   }
@@ -401,11 +403,11 @@ class PuppetRabbit extends PUPPET.Puppet {
       return
     }
 
-    return this.mqManager.sendToServer({
+    await this.mqManager.sendMqCommand({
       commandType: MqCommandType.logout,
-      data: JSON.stringify({
+      data: {
         reason,
-      }),
+      },
     })
   }
 

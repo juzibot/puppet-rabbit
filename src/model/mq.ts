@@ -74,6 +74,9 @@ export type MqResponse<T extends MqCommandType> = T extends keyof PuppetResponse
 
 export type PuppetRequestTypeMap = {
   [MqCommandType.start]: PuppetDTO.StartRequest
+  [MqCommandType.logout]: PuppetDTO.LogoutRequest
+  [MqCommandType.ding]: PuppetDTO.DingRequest
+  [MqCommandType.dirtyPayload]: PuppetDTO.DirtyPayloadRequest
 
   [MqCommandType.contactList]: PuppetDTO.ContactListRequest
   [MqCommandType.contactPayload]: PuppetDTO.ContactPayloadRequest
@@ -96,10 +99,21 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageMiniProgram]: PuppetDTO.MessageMiniProgramRequest
 
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadRequest
+
+  [MqCommandType.postSearch]: PuppetDTO.PostSearchRequest
+  [MqCommandType.postPayload]: PuppetDTO.PostPayloadRequest
+  [MqCommandType.postPayloadSayable]: PuppetDTO.PostPayloadSayableRequest
+  [MqCommandType.postPublish]: PuppetDTO.PostPublishRequest
+  [MqCommandType.postUnpublish]: PuppetDTO.PostUnpublishRequest
+
+  [MqCommandType.tap]: PuppetDTO.TapRequest
 }
 
 export type PuppetResponseTypeMap = {
   [MqCommandType.start]: PuppetDTO.StartResponse
+  [MqCommandType.logout]: PuppetDTO.LogoutResponse
+  [MqCommandType.ding]: PuppetDTO.DingResponse
+  [MqCommandType.dirtyPayload]: PuppetDTO.DirtyPayloadResponse
 
   [MqCommandType.contactList]: PuppetDTO.ContactListResponse
   [MqCommandType.contactPayload]: PuppetDTO.ContactPayloadResponse
@@ -122,4 +136,12 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageMiniProgram]: PuppetDTO.MessageMiniProgramResponse
 
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadResponse
+
+  [MqCommandType.postSearch]: PuppetDTO.PostSearchResponse
+  [MqCommandType.postPayload]: PuppetDTO.PostPayloadResponse
+  [MqCommandType.postPayloadSayable]: PuppetDTO.PostPayloadSayableResponse
+  [MqCommandType.postPublish]: PuppetDTO.PostPublishResponse
+  [MqCommandType.postUnpublish]: PuppetDTO.PostUnpublishResponse
+
+  [MqCommandType.tap]: PuppetDTO.TapResponse
 }
