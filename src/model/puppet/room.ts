@@ -11,14 +11,16 @@ export type RoomAddResponse = {}
 
 export type RoomAvatarRequest = {
   roomId: string,
+  avatarFilebox?: string,
 }
 
 export type RoomAvatarResponse = {
-  avatarFilebox: string,
+  avatarFilebox?: string,
 }
 
 export type RoomCreateRequest = {
   contactIds: string[],
+  topic?: string,
 }
 
 export type RoomCreateResponse = {
@@ -62,7 +64,7 @@ export type RoomQuitResponse = {}
 
 export type RoomTopicRequest = {
   roomId: string,
-  topic: string,
+  topic?: string,
 }
 
 export type RoomTopicResponse = {}
@@ -120,7 +122,9 @@ export type RoomPayloadResponse = {
 
 export type RoomAnnounceRequest = {
   roomId: string,
-  announcement: string,
+  announcement?: string,
 }
 
-export type RoomAnnounceResponse = {}
+export type RoomAnnounceResponse = {
+  announcement?: string,
+}

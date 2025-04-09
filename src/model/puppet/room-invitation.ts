@@ -10,12 +10,14 @@ export type RoomInvitationAcceptByQRCodeRequest = {
   qrCode: string,
 }
 
-export type RoomInvitationAcceptByQRCodeResponse = {}
+export type RoomInvitationAcceptByQRCodeResponse = {
+  roomId: string,
+}
 
 export type RoomInvitationPayloadRequest = {
   roomInvitationId: string,
 }
 
 export type RoomInvitationPayloadResponse = {
-  roomInvitation: payloads.RoomInvitation,
+  payload: payloads.RoomInvitation,
 }

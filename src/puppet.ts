@@ -2,7 +2,7 @@ import * as PUPPET from '@juzi/wechaty-puppet'
 import { MqManager } from './mq/mq-manager.js'
 import { log } from '@juzi/wechaty-puppet'
 import { MqCommandType } from './model/mq.js'
-import { FileBox, FileBoxInterface } from 'file-box'
+import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
 import { stringifyFileBox } from './util/file.js'
 
@@ -314,11 +314,285 @@ class PuppetRabbit extends PUPPET.Puppet {
   }
 
   // room
-  
-  override async roomList() {
-    return []
+
+  override async roomAdd (roomId: string, contactId: string, inviteOnly?: boolean, quoteIds?: string[]) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomAdd,
+      data: {
+        roomId,
+        contactId,
+        inviteOnly,
+        quoteIds,
+      }
+    })
   }
 
+  override async roomAvatar(roomId: string, fileBox?: FileBoxInterface) {
+    if (fileBox?.type !== FileBoxType.Url) {
+      throw new Error('not supported')
+    }
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomAvatar,
+      data: {
+        roomId,
+        avatarFilebox: JSON.stringify(fileBox.toJSON()),
+      }
+    })
+    if (data.avatarFilebox) {
+      return FileBox.fromJSON(data.avatarFilebox)
+    }
+    return
+  }
+
+  override async roomCreate(contactIds: string[], topic?: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomCreate,
+      data: {
+        contactIds,
+        topic,
+      }
+    })
+    return data.roomId
+  }
+
+  override async roomDel(roomId: string, contactIds: string | string[]) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomDel,
+      data: {
+        roomId,
+        contactIds: Array.isArray(contactIds) ? contactIds : [contactIds],
+      }
+    })
+  }
+
+  override async roomList() {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomList,
+      data: {},
+    })
+    return data.roomIds
+  }
+
+  override async roomQRCode(roomId: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomQRCode,
+      data: {
+        roomId,
+      }
+    })
+    return data.qrCode
+  }
+
+  override async roomParseDynamicQRCode(url: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomParseDynamicQRCode,
+      data: {
+        url,
+      }
+    })
+    return data.dynamicQRCodeResult
+  }
+
+  override async roomQuit(roomId: string) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomQuit,
+      data: {
+        roomId,
+      }
+    })
+  }
+
+  override async roomTopic(roomId: string): Promise<string>
+  override async roomTopic(roomId: string, topic: string): Promise<void>
+  override async roomTopic(roomId: string, topic?: string): Promise<string | void> {
+    if (!topic) {
+      const payload = await this.roomPayload(roomId)
+      return payload.topic || ''
+    }
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomTopic,
+      data: {
+        roomId,
+        topic,
+      }
+    })
+  }
+
+  override async roomRemark(roomId: string, remark: string) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomRemark,
+      data: {
+        roomId,
+        remark,
+      }
+    })
+  }
+
+  override async roomOwnerTransfer(roomId: string, contactId: string) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomOwnerTransfer,
+      data: {
+        roomId,
+        contactId,
+      }
+    })
+  }
+
+  override async roomDismiss(roomId: string) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomDismiss,
+      data: {
+        roomId,
+      }
+    })
+  }
+
+  override async roomPermission(roomId: string, permissions?: PUPPET.types.RoomPermission) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomPermission,
+      data: {
+        roomId,
+        permissions,
+      }
+    })
+    return data.permissions
+  }
+
+  override async roomAddAdmins(roomId: string, contactIds: string[]) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomAddAdmins,
+      data: {
+        roomId,
+        contactIds,
+      }
+    })
+  }
+
+  override async roomDelAdmins(roomId: string, contactIds: string[]) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomDelAdmins,
+      data: {
+        roomId,
+        contactIds,
+      }
+    })
+  }
+
+  override async roomRawPayload(
+    id: string,
+  ): Promise<PUPPET.payloads.Room> {
+    // TODO: add local cache
+
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomPayload,
+      data: {
+        roomId: id,
+      },
+    })
+    return data.payload
+  }
+
+  override async roomRawPayloadParser(
+    payload: PUPPET.payloads.Room,
+  ): Promise<PUPPET.payloads.Room> {
+    return payload
+  }
+
+  override async roomAnnounce(roomId: string): Promise<string>
+  override async roomAnnounce(roomId: string, text: string): Promise<void>
+  override async roomAnnounce(roomId: string, announcement?: string): Promise<string | void> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomAnnounce,
+      data: {
+        roomId,
+        announcement,
+      }
+    })
+    return data.announcement || ''
+  }
+  
+  // room member
+
+  override async roomMemberList(roomId: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomMemberList,
+      data: {
+        roomId,
+      }
+    })
+    return data.contactIds
+  }
+
+  override async roomMemberRawPayload(roomId: string, contactId: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomMemberPayload,
+      data: {
+        roomId,
+        contactId,
+      }
+    })
+    return data.payload
+  }
+
+  override async roomMemberRawPayloadParser(
+    payload: PUPPET.payloads.RoomMember,
+  ): Promise<PUPPET.payloads.RoomMember> {
+    return payload
+  }
+
+  override async batchRoomMemberRawPayload(roomId: string, contactIds: string[]) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.batchRoomMemberPayload,
+      data: {
+        roomId,
+        contactIds,
+      }
+    })
+    return new Map(Object.entries(data))
+  }
+
+  // room invitation
+
+  override async roomInvitationAccept(roomInvitationId: string) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomInvitationAccept,
+      data: {
+        roomInvitationId,
+      }
+    })
+  }
+
+  override async roomInvitationAcceptByQRCode(qrCode: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomInvitationAcceptByQRCode,
+      data: {
+        qrCode,
+      }
+    })
+    const roomPayload = await this.roomPayload(data.roomId)
+    return {
+      roomId: data.roomId,
+      chatId: roomPayload.handle || '',
+    }
+  }
+
+  override async roomInvitationRawPayload(roomInvitationId: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.roomInvitationPayload,
+      data: {
+        roomInvitationId,
+      }
+    })
+    return data.payload
+  }
+
+  override async roomInvitationRawPayloadParser(
+    payload: PUPPET.payloads.RoomInvitation,
+  ): Promise<PUPPET.payloads.RoomInvitation> {
+    return payload
+  }
+  
+  
   // post
 
   override async postSearch(
@@ -445,6 +719,24 @@ class PuppetRabbit extends PUPPET.Puppet {
       })
       .on('friendship', (data: PUPPET.payloads.EventFriendship) => {
         this.emit('friendship', data)
+      })
+      .on('room-invite', (data: PUPPET.payloads.EventRoomInvite) => {
+        this.emit('room-invite', data)
+      })
+      .on('room-join', (data: PUPPET.payloads.EventRoomJoin) => {
+        this.emit('room-join', data)
+      })
+      .on('room-leave', (data: PUPPET.payloads.EventRoomLeave) => {
+        this.emit('room-leave', data)
+      })
+      .on('room-topic', (data: PUPPET.payloads.EventRoomTopic) => {
+        this.emit('room-topic', data)
+      })
+      .on('room-announce', (data: PUPPET.payloads.EventRoomAnnounce) => {
+        this.emit('room-announce', data)  
+      })
+      .on('verify-code', (data: PUPPET.payloads.EventVerifyCode) => {
+        this.emit('verify-code', data)
       })
   }
 

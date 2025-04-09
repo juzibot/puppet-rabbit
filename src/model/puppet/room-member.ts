@@ -14,5 +14,14 @@ export type RoomMemberPayloadRequest = {
 }
 
 export type RoomMemberPayloadResponse = {
-  roomMember: payloads.RoomMember,
+  payload: payloads.RoomMember,
+}
+
+export type BatchRoomMemberPayloadRequest = {
+  roomId: string,
+  contactIds: string[],
+}
+
+export type BatchRoomMemberPayloadResponse = {
+  [roomMemberId: string]: payloads.RoomMember,
 }
