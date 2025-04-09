@@ -28,6 +28,32 @@ export enum MqCommandType {
   contactPayload = 'contactPayload',
   contactList = 'contactList',
 
+  roomAdd = 'roomAdd',
+  roomAvatar = 'roomAvatar',
+  roomCreate = 'roomCreate',
+  roomDel = 'roomDel',
+  roomList = 'roomList',
+  roomQRCode = 'roomQRCode',
+  roomParseDynamicQRCode = 'roomParseDynamicQRCode',
+  roomQuit = 'roomQuit',
+  roomTopic = 'roomTopic',
+  roomRemark = 'roomRemark',
+  roomOwnerTransfer = 'roomOwnerTransfer',
+  roomDismiss = 'roomDismiss',
+  roomPermission = 'roomPermission',
+  roomAddAdmins = 'roomAddAdmins',
+  roomDelAdmins = 'roomDelAdmins',
+  roomPayload = 'roomPayload',
+  roomAnnounce = 'roomAnnounce',
+
+  roomMemberList = 'roomMemberList',
+  roomMemberPayload = 'roomMemberPayload',
+  batchRoomMemberPayload = 'batchRoomMemberRawPayload',
+
+  roomInvitationAccept = 'roomInvitationAccept',
+  roomInvitationAcceptByQRCode = 'roomInvitationAcceptByQRCode',
+  roomInvitationPayload = 'roomInvitationPayload',
+
   conversationReadMark = 'conversationReadMark',
   messagePayload = 'messagePayload',
   messageSendText = 'messageSendText',
@@ -81,6 +107,32 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.contactList]: PuppetDTO.ContactListRequest
   [MqCommandType.contactPayload]: PuppetDTO.ContactPayloadRequest
 
+  [MqCommandType.roomAdd]: PuppetDTO.RoomAddRequest
+  [MqCommandType.roomAvatar]: PuppetDTO.RoomAvatarRequest
+  [MqCommandType.roomCreate]: PuppetDTO.RoomCreateRequest
+  [MqCommandType.roomDel]: PuppetDTO.RoomDelRequest
+  [MqCommandType.roomList]: PuppetDTO.RoomListRequest
+  [MqCommandType.roomQRCode]: PuppetDTO.RoomQRCodeRequest
+  [MqCommandType.roomParseDynamicQRCode]: PuppetDTO.RoomParseDynamicQRCodeRequest
+  [MqCommandType.roomQuit]: PuppetDTO.RoomQuitRequest
+  [MqCommandType.roomTopic]: PuppetDTO.RoomTopicRequest
+  [MqCommandType.roomRemark]: PuppetDTO.RoomRemarkRequest
+  [MqCommandType.roomOwnerTransfer]: PuppetDTO.RoomOwnerTransferRequest
+  [MqCommandType.roomDismiss]: PuppetDTO.RoomDismissRequest
+  [MqCommandType.roomPermission]: PuppetDTO.RoomPermissionRequest
+  [MqCommandType.roomAddAdmins]: PuppetDTO.RoomAddAdminsRequest
+  [MqCommandType.roomDelAdmins]: PuppetDTO.RoomDelAdminsRequest
+  [MqCommandType.roomPayload]: PuppetDTO.RoomPayloadRequest
+  [MqCommandType.roomAnnounce]: PuppetDTO.RoomAnnounceRequest
+
+  [MqCommandType.roomMemberList]: PuppetDTO.RoomMemberListRequest
+  [MqCommandType.roomMemberPayload]: PuppetDTO.RoomMemberPayloadRequest
+  [MqCommandType.batchRoomMemberPayload]: PuppetDTO.BatchRoomMemberPayloadRequest
+
+  [MqCommandType.roomInvitationAccept]: PuppetDTO.RoomInvitationAcceptRequest
+  [MqCommandType.roomInvitationAcceptByQRCode]: PuppetDTO.RoomInvitationAcceptByQRCodeRequest
+  [MqCommandType.roomInvitationPayload]: PuppetDTO.RoomInvitationPayloadRequest
+
   [MqCommandType.conversationReadMark]: PuppetDTO.ConversationReadMarkRequest
   [MqCommandType.messagePayload]: PuppetDTO.MessagePayloadRequest
   [MqCommandType.messageSendText]: PuppetDTO.MessageSendTextRequest
@@ -117,6 +169,32 @@ export type PuppetResponseTypeMap = {
 
   [MqCommandType.contactList]: PuppetDTO.ContactListResponse
   [MqCommandType.contactPayload]: PuppetDTO.ContactPayloadResponse
+
+  [MqCommandType.roomAdd]: PuppetDTO.RoomAddResponse
+  [MqCommandType.roomAvatar]: PuppetDTO.RoomAvatarResponse
+  [MqCommandType.roomCreate]: PuppetDTO.RoomCreateResponse
+  [MqCommandType.roomDel]: PuppetDTO.RoomDelResponse
+  [MqCommandType.roomList]: PuppetDTO.RoomListResponse
+  [MqCommandType.roomQRCode]: PuppetDTO.RoomQRCodeResponse
+  [MqCommandType.roomParseDynamicQRCode]: PuppetDTO.RoomParseDynamicQRCodeResponse
+  [MqCommandType.roomQuit]: PuppetDTO.RoomQuitResponse
+  [MqCommandType.roomTopic]: PuppetDTO.RoomTopicResponse
+  [MqCommandType.roomRemark]: PuppetDTO.RoomRemarkResponse
+  [MqCommandType.roomOwnerTransfer]: PuppetDTO.RoomOwnerTransferResponse
+  [MqCommandType.roomDismiss]: PuppetDTO.RoomDismissResponse
+  [MqCommandType.roomPermission]: PuppetDTO.RoomPermissionResponse
+  [MqCommandType.roomAddAdmins]: PuppetDTO.RoomAddAdminsResponse
+  [MqCommandType.roomDelAdmins]: PuppetDTO.RoomDelAdminsResponse
+  [MqCommandType.roomPayload]: PuppetDTO.RoomPayloadResponse
+  [MqCommandType.roomAnnounce]: PuppetDTO.RoomAnnounceResponse
+
+  [MqCommandType.roomMemberList]: PuppetDTO.RoomMemberListResponse
+  [MqCommandType.roomMemberPayload]: PuppetDTO.RoomMemberPayloadResponse
+  [MqCommandType.batchRoomMemberPayload]: PuppetDTO.BatchRoomMemberPayloadResponse
+
+  [MqCommandType.roomInvitationAccept]: PuppetDTO.RoomInvitationAcceptResponse
+  [MqCommandType.roomInvitationAcceptByQRCode]: PuppetDTO.RoomInvitationAcceptByQRCodeResponse
+  [MqCommandType.roomInvitationPayload]: PuppetDTO.RoomInvitationPayloadResponse
 
   [MqCommandType.conversationReadMark]: PuppetDTO.ConversationReadMarkResponse
   [MqCommandType.messagePayload]: PuppetDTO.MessagePayloadResponse

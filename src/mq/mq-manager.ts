@@ -338,6 +338,24 @@ export class MqManager extends EventEmitter {
       case 'friendship':
         this.emit('friendship', JSON.parse(data))
         break
+      case 'room-invite':
+        this.emit('room-invite', JSON.parse(data))
+        break
+      case 'room-join':
+        this.emit('room-join', JSON.parse(data))
+        break
+      case 'room-leave':
+        this.emit('room-leave', JSON.parse(data))
+        break
+      case 'room-topic':
+        this.emit('room-topic', JSON.parse(data))
+        break
+      case 'room-announce':
+        this.emit('room-announce', JSON.parse(data))
+        break
+      case 'verify-code':
+        this.emit('verify-code', JSON.parse(data))
+        break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
     }
