@@ -144,12 +144,13 @@ class PuppetRabbit extends PUPPET.Puppet {
 
   // message send
 
-  override async messageSendText(conversationId: string, text: string) {
+  override async messageSendText(conversationId: string, text: string, option?: PUPPET.types.MessageSendTextOptions) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageSendText,
       data: {
         conversationId,
         text,
+        option,
       },
     })
     return response.messageId
