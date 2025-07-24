@@ -201,6 +201,28 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.messageId
   }
 
+  override async messageSendChannel(conversationId: string, channel: PUPPET.payloads.Channel) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendChannel,
+      data: {
+        conversationId,
+        channel,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendContact(conversationId: string, contactId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendContact,
+      data: {
+        conversationId,
+        contactId,
+      },
+    })
+    return response.messageId
+  }
+
   override async messageRecall(messageId: string) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageRecall,

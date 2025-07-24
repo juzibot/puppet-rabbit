@@ -61,6 +61,8 @@ export enum MqCommandType {
   messageSendMiniProgram = 'messageSendMiniProgram',
   messageSendUrl = 'messageSendUrl',
   messageSendLocation = 'messageSendLocation',
+  messageSendChannel = 'messageSendChannel',
+  messageSendContact = 'messageSendContact',
 
   messageRecall = 'messageRecall',
 
@@ -140,7 +142,8 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendMiniProgram]: PuppetDTO.MessageSendMiniProgramRequest
   [MqCommandType.messageSendUrl]: PuppetDTO.MessageSendUrlRequest
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationRequest
-
+  [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelRequest
+  [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactRequest
   [MqCommandType.messageRecall]: PuppetDTO.MessageRecallRequest
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageRequest
@@ -203,7 +206,8 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendMiniProgram]: PuppetDTO.MessageSendMiniProgramResponse
   [MqCommandType.messageSendUrl]: PuppetDTO.MessageSendUrlResponse
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationResponse
-
+  [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelResponse
+  [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactResponse
   [MqCommandType.messageRecall]: PuppetDTO.MessageRecallResponse
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageResponse
