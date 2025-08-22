@@ -223,6 +223,55 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.messageId
   }
 
+  override async listConsultCards(query: any): Promise<any> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.listConsultCards,
+      data: query,
+    })
+    return data
+  }
+
+  override async messageConsultCard(messageId: string) {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageConsultCard,
+      data: {
+        messageId,
+      },
+    })
+    return data.consultCard as any
+  }
+
+  override async messageSendPremiumOnlineAppointmentCard(conversationId: string, premiumOnlineAppointmentCardSendPayload: any) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendPremiumOnlineAppointmentCard,
+      data: {
+        conversationId,
+        msgType: premiumOnlineAppointmentCardSendPayload.msgType,
+        componentType: premiumOnlineAppointmentCardSendPayload.componentType,
+        componentId: premiumOnlineAppointmentCardSendPayload.componentId,
+      },
+    })
+    return response.messageId
+  }
+
+  override async listPremiumOnlineAppointmentCards(query: any): Promise<any> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.listPremiumOnlineAppointmentCards,
+      data: query,
+    })
+    return data
+  }
+
+  override async messagePremiumOnlineAppointmentCard(messageId: string): Promise<any> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messagePremiumOnlineAppointmentCard,
+      data: {
+        messageId,
+      },
+    })
+    return data.premiumOnlineAppointmentCard
+  }
+
   override async messageRecall(messageId: string) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageRecall,
