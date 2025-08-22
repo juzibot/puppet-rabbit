@@ -64,6 +64,12 @@ export enum MqCommandType {
   messageSendChannel = 'messageSendChannel',
   messageSendContact = 'messageSendContact',
 
+  listConsultCards = 'listConsultCards',
+  messageConsultCard = 'messageConsultCard',
+  messageSendPremiumOnlineAppointmentCard = 'messageSendPremiumOnlineAppointmentCard',
+  listPremiumOnlineAppointmentCards = 'listPremiumOnlineAppointmentCards',
+  messagePremiumOnlineAppointmentCard = 'messagePremiumOnlineAppointmentCard',
+
   messageRecall = 'messageRecall',
 
   messageImage = 'messageImage',
@@ -144,6 +150,13 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationRequest
   [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelRequest
   [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactRequest
+
+  [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsRequest
+  [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardRequest
+  [MqCommandType.messageSendPremiumOnlineAppointmentCard]: PuppetDTO.MessageSendPremiumOnlineAppointmentCardRequest
+  [MqCommandType.listPremiumOnlineAppointmentCards]: PuppetDTO.ListPremiumOnlineAppointmentCardsRequest
+  [MqCommandType.messagePremiumOnlineAppointmentCard]: PuppetDTO.MessagePremiumOnlineAppointmentCardRequest
+
   [MqCommandType.messageRecall]: PuppetDTO.MessageRecallRequest
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageRequest
@@ -208,6 +221,13 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationResponse
   [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelResponse
   [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactResponse
+
+  [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsResponse
+  [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardResponse
+  [MqCommandType.messageSendPremiumOnlineAppointmentCard]: PuppetDTO.MessageSendPremiumOnlineAppointmentCardResponse
+  [MqCommandType.listPremiumOnlineAppointmentCards]: PuppetDTO.ListPremiumOnlineAppointmentCardsResponse
+  [MqCommandType.messagePremiumOnlineAppointmentCard]: PuppetDTO.MessagePremiumOnlineAppointmentCardResponse
+
   [MqCommandType.messageRecall]: PuppetDTO.MessageRecallResponse
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageResponse

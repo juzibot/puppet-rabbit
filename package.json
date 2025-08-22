@@ -26,7 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "@juzi/wechaty": "1.0.104",
-    "@juzi/wechaty-puppet": "^1.0.105",
+    "@juzi/wechaty-puppet": "^1.0.112",
     "@juzi/wechaty-puppet-rabbit": "1.0.3",
     "amqplib": "^0.7.1",
     "file-box": "npm:@juzi/file-box@^1.7.9",
