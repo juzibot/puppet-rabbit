@@ -222,24 +222,7 @@ export type MessageConsultCardRequest = {
 }
 
 export type MessageConsultCardResponse = {
-  consultCard: {
-    id: number,
-    cardType: number,
-    name: string,
-    content: string,
-    status: number,
-    statusMsg: number,
-    actions?: {
-      name: string,
-      actionType: number,
-      imComponent?: {
-        type: string,
-        componentId: number,
-        componentName: string,
-        extra: string,
-      }
-    }[]
-  },
+  consultCard: payloads.ConsultCard
 }
 
 export type MessageSendPremiumOnlineAppointmentCardRequest = {
@@ -258,11 +241,5 @@ export type MessagePremiumOnlineAppointmentCardRequest = {
 }
 
 export type MessagePremiumOnlineAppointmentCardResponse = {
-  premiumOnlineAppointmentCard: {
-    componentId: string,
-    titleImage: string,
-    createTime: number,
-    title: string,
-    subTitle: string,
-  },
+  premiumOnlineAppointmentCard: payloads.PremiumOnlineAppointmentCard
 }
