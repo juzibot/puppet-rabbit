@@ -217,36 +217,6 @@ export type MessagePayloadResponse = {
   payload: payloads.Message,
 }
 
-export type ListConsultCardsRequest = {
-  cardType: number,
-  status?: number,
-  ids?: number[],
-  page: number,
-  pageSize: number,
-}
-
-export type ListConsultCardsResponse = {
-  total: number,
-  cards: {
-    id: number,
-    cardType: number,
-    name: string,
-    content: string,
-    status: number,
-    statusMsg: number,
-    actions?: {
-      name: string,
-      actionType: number,
-      imComponent?: {
-        type: string,
-        componentId: number,
-        componentName: string,
-        extra: string,
-      }
-    }[]
-  }[],
-}
-
 export type MessageConsultCardRequest = {
   messageId: string,
 }
@@ -283,30 +253,13 @@ export type MessageSendPremiumOnlineAppointmentCardResponse = {
   messageId?: string,
 }
 
-export type ListPremiumOnlineAppointmentCardsRequest = {
-  linkTypes: number[],
-  page: number,
-  pageSize: number,
-}
-
-export type ListPremiumOnlineAppointmentCardsResponse = {
-  total: number,
-  tools: {
-    componentId: number,
-    titleImage: string,
-    createTime: number,
-    title: string,
-    subTitle: string,
-  }[],
-}
-
 export type MessagePremiumOnlineAppointmentCardRequest = {
   messageId: string,
 }
 
 export type MessagePremiumOnlineAppointmentCardResponse = {
   premiumOnlineAppointmentCard: {
-    componentId: number,
+    componentId: string,
     titleImage: string,
     createTime: number,
     title: string,
