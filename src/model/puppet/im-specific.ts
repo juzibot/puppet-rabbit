@@ -30,7 +30,7 @@ export type GetCorpMessageInterceptionStrategiesResponse = {
 }
 
 export type ListConsultCardsRequest = {
-  cardType: string,
+  cardType: number,
   status?: number,
   ids?: string[],
   page: number,
