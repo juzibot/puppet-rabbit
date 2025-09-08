@@ -63,6 +63,7 @@ export enum MqCommandType {
   messageSendLocation = 'messageSendLocation',
   messageSendChannel = 'messageSendChannel',
   messageSendContact = 'messageSendContact',
+  messageSendConsultCard = 'messageSendConsultCard',
 
   listConsultCards = 'listConsultCards',
   messageConsultCard = 'messageConsultCard',
@@ -150,6 +151,7 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationRequest
   [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelRequest
   [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactRequest
+  [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardRequest
 
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsRequest
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardRequest
@@ -221,6 +223,7 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationResponse
   [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelResponse
   [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactResponse
+  [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardResponse
 
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsResponse
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardResponse

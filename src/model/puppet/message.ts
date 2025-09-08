@@ -243,3 +243,12 @@ export type MessagePremiumOnlineAppointmentCardRequest = {
 export type MessagePremiumOnlineAppointmentCardResponse = {
   premiumOnlineAppointmentCard: payloads.PremiumOnlineAppointmentCard
 }
+
+export type MessageSendConsultCardRequest = {
+  conversationId: string,
+  consultCard: payloads.ConsultCard, 
+}
+
+export type MessageSendConsultCardResponse = {
+  messageId?: string,
+}

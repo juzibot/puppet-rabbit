@@ -223,6 +223,19 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.messageId
   }
 
+
+  override async messageSendConsultCard(conversationId: string, consultCard: PUPPET.payloads.ConsultCard) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendConsultCard,
+      data: {
+        conversationId,
+        consultCard,
+      },
+    })
+    return response.messageId
+  }
+
+
   override async listConsultCards(query: any): Promise<any> {
     const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.listConsultCards,
