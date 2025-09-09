@@ -252,3 +252,12 @@ export type MessageSendConsultCardRequest = {
 export type MessageSendConsultCardResponse = {
   messageId?: string,
 }
+
+export type MessageSendDouyinOneClickPhoneCollectionRequest = {
+  conversationId: string,
+  douyinOneClickPhoneCollection: {},
+}
+
+export type MessageSendDouyinOneClickPhoneCollectionResponse = {
+  messageId?: string,
+}

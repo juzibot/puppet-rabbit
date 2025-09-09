@@ -285,6 +285,17 @@ class PuppetRabbit extends PUPPET.Puppet {
     return data.premiumOnlineAppointmentCard
   }
 
+  override async messageSendDouyinOneClickPhoneCollection(conversationId: string, douyinOneClickPhoneCollection: {}) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendDouyinOneClickPhoneCollection,
+      data: {
+        conversationId,
+        douyinOneClickPhoneCollection,
+      },
+    })
+    return response.messageId
+  }
+
   override async messageRecall(messageId: string) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageRecall,

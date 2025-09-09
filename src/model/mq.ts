@@ -64,6 +64,7 @@ export enum MqCommandType {
   messageSendChannel = 'messageSendChannel',
   messageSendContact = 'messageSendContact',
   messageSendConsultCard = 'messageSendConsultCard',
+  messageSendDouyinOneClickPhoneCollection = 'messageSendDouyinOneClickPhoneCollection',
 
   listConsultCards = 'listConsultCards',
   messageConsultCard = 'messageConsultCard',
@@ -152,6 +153,7 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelRequest
   [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactRequest
   [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardRequest
+  [MqCommandType.messageSendDouyinOneClickPhoneCollection]: PuppetDTO.MessageSendDouyinOneClickPhoneCollectionRequest
 
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsRequest
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardRequest
@@ -224,7 +226,8 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendChannel]: PuppetDTO.MessageSendChannelResponse
   [MqCommandType.messageSendContact]: PuppetDTO.MessageSendContactResponse
   [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardResponse
-
+  [MqCommandType.messageSendDouyinOneClickPhoneCollection]: PuppetDTO.MessageSendDouyinOneClickPhoneCollectionResponse
+  
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsResponse
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardResponse
   [MqCommandType.messageSendPremiumOnlineAppointmentCard]: PuppetDTO.MessageSendPremiumOnlineAppointmentCardResponse
