@@ -2,7 +2,7 @@ import { payloads, types } from "@juzi/wechaty-puppet"
 
 export type RoomAddRequest = {
   roomId: string,
-  contactId: string,
+  contactId: string | string[],
   inviteOnly?: boolean,
   quoteIds?: string[],
 }

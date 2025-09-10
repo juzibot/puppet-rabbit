@@ -411,7 +411,7 @@ class PuppetRabbit extends PUPPET.Puppet {
 
   // room
 
-  override async roomAdd (roomId: string, contactId: string, inviteOnly?: boolean, quoteIds?: string[]) {
+  override async roomAdd (roomId: string, contactId: string | string[], inviteOnly?: boolean, quoteIds?: string[]) {
     await this.mqManager.sendMqCommand({
       commandType: MqCommandType.roomAdd,
       data: {
