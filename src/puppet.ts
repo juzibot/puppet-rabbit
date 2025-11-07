@@ -261,7 +261,6 @@ class PuppetRabbit extends PUPPET.Puppet {
       data: {
         conversationId,
         cardType: premiumOnlineAppointmentCardSendPayload.cardType,
-        componentType: premiumOnlineAppointmentCardSendPayload.componentType,
         componentId: premiumOnlineAppointmentCardSendPayload.componentId,
       },
     })

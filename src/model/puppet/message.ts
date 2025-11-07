@@ -228,7 +228,6 @@ export type MessageConsultCardResponse = {
 export type MessageSendPremiumOnlineAppointmentCardRequest = {
   conversationId: string,
   cardType: string,
-  componentType: string,
   componentId: string,
 }
 
