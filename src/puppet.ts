@@ -5,6 +5,7 @@ import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
 import { stringifyFileBox } from './util/file.js'
+import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
   mqUri: string
@@ -254,12 +255,12 @@ class PuppetRabbit extends PUPPET.Puppet {
     return data.consultCard as any
   }
 
-  override async messageSendPremiumOnlineAppointmentCard(conversationId: string, premiumOnlineAppointmentCardSendPayload: any) {
+  override async messageSendPremiumOnlineAppointmentCard(conversationId: string, premiumOnlineAppointmentCardSendPayload: PremiumOnlineAppointmentCardSendPayload) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageSendPremiumOnlineAppointmentCard,
       data: {
         conversationId,
-        msgType: premiumOnlineAppointmentCardSendPayload.msgType,
+        cardType: premiumOnlineAppointmentCardSendPayload.cardType,
         componentType: premiumOnlineAppointmentCardSendPayload.componentType,
         componentId: premiumOnlineAppointmentCardSendPayload.componentId,
       },
@@ -267,7 +268,7 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.messageId
   }
 
-  override async listPremiumOnlineAppointmentCards(query: any): Promise<any> {
+  override async listPremiumOnlineAppointmentCards(query: PremiumOnlineAppointmentCardListRequest): Promise<PremiumOnlineAppointmentCardListResponse> {
     const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.listPremiumOnlineAppointmentCards,
       data: query,
@@ -275,7 +276,7 @@ class PuppetRabbit extends PUPPET.Puppet {
     return data
   }
 
-  override async messagePremiumOnlineAppointmentCard(messageId: string): Promise<any> {
+  override async messagePremiumOnlineAppointmentCard(messageId: string): Promise<PUPPET.payloads.PremiumOnlineAppointmentCard> {
     const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messagePremiumOnlineAppointmentCard,
       data: {

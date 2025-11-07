@@ -1,4 +1,4 @@
-import { types } from "@juzi/wechaty-puppet"
+import { payloads, types } from "@juzi/wechaty-puppet"
 
 export type GetContactExternalUserIdRequest = {
   contactIds: string[],
@@ -60,19 +60,13 @@ export type ListConsultCardsResponse = {
 }
 
 export type ListPremiumOnlineAppointmentCardsRequest = {
-  linkTypes: number[],
+  cardType: string,
   page: number,
   pageSize: number,
 }
 
 export type ListPremiumOnlineAppointmentCardsResponse = {
   total: number,
-  tools: {
-    componentId: string,
-    titleImage: string,
-    createTime: number,
-    title: string,
-    subTitle: string,
-  }[],
+  tools: payloads.PremiumOnlineAppointmentCard[],
 }
 

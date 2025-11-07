@@ -227,9 +227,9 @@ export type MessageConsultCardResponse = {
 
 export type MessageSendPremiumOnlineAppointmentCardRequest = {
   conversationId: string,
-  msgType: number,
-  componentType: number,
-  componentId: number,
+  cardType: string,
+  componentType: string,
+  componentId: string,
 }
 
 export type MessageSendPremiumOnlineAppointmentCardResponse = {
