@@ -92,8 +92,8 @@ export enum MqCommandType {
   tap = 'tap',
   logout = 'logout',
 
-  listIntentComments = 'listIntentComments'
-  intentCommentPayload = 'intentCommentPayload'
+  listIntentComments = 'listIntentComments',
+  intentCommentPayload = 'intentCommentPayload',
 }
 
 export interface MqCommandResponseWaiter {
