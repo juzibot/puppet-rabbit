@@ -1,4 +1,4 @@
-import { payloads, types } from "@juzi/wechaty-puppet"
+import { filters, payloads, types } from "@juzi/wechaty-puppet"
 
 export type GetContactExternalUserIdRequest = {
   contactIds: string[],
@@ -70,3 +70,14 @@ export type ListPremiumOnlineAppointmentCardsResponse = {
   tools: payloads.PremiumOnlineAppointmentCard[],
 }
 
+export type ListIntentCommentsRequest = filters.PaginationRequest
+
+export type ListIntentCommentsResponse = filters.PaginationResponse<payloads.IntentComment[]>
+
+export type IntentCommentPayloadRequest = {
+  intentCommentId: string,
+}
+
+export type IntentCommentPayloadResponse = {
+  payload: payloads.IntentComment,
+}

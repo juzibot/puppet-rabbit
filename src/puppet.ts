@@ -781,6 +781,24 @@ class PuppetRabbit extends PUPPET.Puppet {
     })
   }
 
+  override async listIntentComments(query: PUPPET.filters.PaginationRequest): Promise<PUPPET.filters.PaginationResponse<PUPPET.payloads.IntentComment[]>> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.listIntentComments,
+      data: query
+    })
+    return data
+  }
+
+  override async intentCommentPayload(id: string): Promise<PUPPET.payloads.IntentComment> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.intentCommentPayload,
+      data: {
+        intentCommentId: id,
+      }
+    })
+    return data.payload
+  }
+
   initEvents() {
     this.mqManager
       .on('dong', (data: PUPPET.payloads.EventDong) => {

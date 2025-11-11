@@ -91,6 +91,9 @@ export enum MqCommandType {
   postUnpublish = 'postUnpublish',
   tap = 'tap',
   logout = 'logout',
+
+  listIntentComments = 'listIntentComments'
+  intentCommentPayload = 'intentCommentPayload'
 }
 
 export interface MqCommandResponseWaiter {
@@ -179,6 +182,9 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.postUnpublish]: PuppetDTO.PostUnpublishRequest
 
   [MqCommandType.tap]: PuppetDTO.TapRequest
+
+  [MqCommandType.listIntentComments]: PuppetDTO.ListIntentCommentsRequest
+  [MqCommandType.intentCommentPayload]: PuppetDTO.IntentCommentPayloadRequest
 }
 
 export type PuppetResponseTypeMap = {
@@ -252,4 +258,7 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.postUnpublish]: PuppetDTO.PostUnpublishResponse
 
   [MqCommandType.tap]: PuppetDTO.TapResponse
+
+  [MqCommandType.listIntentComments]: PuppetDTO.ListIntentCommentsResponse
+  [MqCommandType.intentCommentPayload]: PuppetDTO.IntentCommentPayloadResponse
 }
