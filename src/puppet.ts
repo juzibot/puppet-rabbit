@@ -852,6 +852,9 @@ class PuppetRabbit extends PUPPET.Puppet {
       .on('verify-code', (data: PUPPET.payloads.EventVerifyCode) => {
         this.emit('verify-code', data)
       })
+      .on('intent-comment', (data: PUPPET.payloads.EventIntentComment) => {
+        this.emit('intent-comment', data)
+      })
   }
 
   removeEvents() {
