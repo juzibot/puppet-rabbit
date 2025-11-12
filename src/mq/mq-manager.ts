@@ -356,6 +356,9 @@ export class MqManager extends EventEmitter {
       case 'verify-code':
         this.emit('verify-code', JSON.parse(data))
         break
+      case 'intent-comment':
+        this.emit('intent-comment', JSON.parse(data))
+        break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
     }
