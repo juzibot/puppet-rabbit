@@ -855,6 +855,12 @@ class PuppetRabbit extends PUPPET.Puppet {
       .on('intent-comment', (data: PUPPET.payloads.EventIntentComment) => {
         this.emit('intent-comment', data)
       })
+      .on('contact-enter-conversation', (data: PUPPET.payloads.EventContactEnterConversation) => {
+        this.emit('contact-enter-conversation', data)
+      })
+      .on('contact-lead-filled', (data: PUPPET.payloads.EventContactLeadFilled) => {
+        this.emit('contact-lead-filled', data)
+      })
   }
 
   removeEvents() {
