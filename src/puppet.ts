@@ -16,7 +16,7 @@ export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
 const PRE = 'PuppetRabbit'
 
 class PuppetRabbit extends PUPPET.Puppet {
-  private readonly mqManager = MqManager.Instance
+  private readonly mqManager = new MqManager()
 
   private heartbeatTimer: NodeJS.Timer | undefined
 
@@ -54,6 +54,7 @@ class PuppetRabbit extends PUPPET.Puppet {
 
   override async onStop(): Promise<void> {
     log.verbose(PRE, 'onStop()')
+    await this.mqManager.destroy()
     this.stopHeartbeat()
   }
 

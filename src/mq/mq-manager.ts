@@ -29,12 +29,6 @@ enum LISTENER_TYPE {
 }
 
 export class MqManager extends EventEmitter {
-  private static _instance: MqManager
-
-  public static get Instance(): MqManager {
-    return this._instance || (this._instance = new this())
-  }
-
   private puppetConnection: AmqpConnectService | undefined
   private puppetChannel: AmqpChannelService | undefined
 
@@ -46,12 +40,12 @@ export class MqManager extends EventEmitter {
   private exchangeBaseName: string | undefined
   private mqUri: string | undefined
 
-  private static MqCommandResponsePool = new Map<
+  private MqCommandResponsePool = new Map<
     string,
     MqCommandResponseWaiter
   >()
 
-  private static async consumption(
+  private async consumption(
     msg: ConsumeMessage | null,
     channel: AmqpChannelService | undefined,
   ) {
@@ -78,7 +72,7 @@ export class MqManager extends EventEmitter {
         }
         clearTimeout(waiter.timer)
       } else {
-        this.Instance.handleEvent(message.eventType!, message.data)
+        this.handleEvent(message.eventType!, message.data)
       }
     } catch (e) {
       log.error(PRE, `consumption() error: ${(e as Error).stack}`)
@@ -110,6 +104,14 @@ export class MqManager extends EventEmitter {
     await this.startConsumer()
   }
 
+  public async destroy() {
+    log.info(PRE, `destroy(${this.token})`)
+    this.puppetConnection?.close()
+    this.puppetConnection = undefined
+    this.puppetChannel?.close()
+    this.puppetChannel = undefined
+  }
+
   private async initConnect() {
     log.info(PRE, 'initConnect()')
     await this.puppetConnection!.ready()
@@ -135,12 +137,12 @@ export class MqManager extends EventEmitter {
 
   private async createChannelService(prefetch: number) {
     log.info(PRE, 'Creating Channel ...')
-    const instance = await this.puppetConnection?.createChannelService(false)
-    if (instance) {
-      await instance.setPrefetchCount(prefetch)
-      return instance
+    const channel = await this.puppetConnection?.createChannelService(false)
+    if (channel) {
+      await channel.setPrefetchCount(prefetch)
+      return channel
     } else {
-      throw new Error(`Cant Create Amqp Channel Instance`)
+      throw new Error(`Cant Create Amqp Channel`)
     }
   }
 
@@ -246,7 +248,7 @@ export class MqManager extends EventEmitter {
     log.info(PRE, 'startConsumer()')
     this.puppetChannel?.consume(
       getTokenQueueName(this.token!),
-      (msg) => void MqManager.consumption(msg, this.puppetChannel),
+      (msg) => void this.consumption(msg, this.puppetChannel),
       {
         consumerTag: 'puppetConsumer',
       },
@@ -279,19 +281,19 @@ export class MqManager extends EventEmitter {
           )
         }, 1 * MINUTE),
       }
-      MqManager.MqCommandResponsePool.set(message.traceId!, waiter)
+      this.MqCommandResponsePool.set(message.traceId!, waiter)
     })
       .then((data) => {
         log.verbose(PRE, `handleResponse(${JSON.stringify(data)})`)
         return data
       })
       .finally(() => {
-        const waiterInPool = MqManager.MqCommandResponsePool.get(
+        const waiterInPool = this.MqCommandResponsePool.get(
           message.traceId!,
         )
         if (waiterInPool) {
           clearTimeout(waiterInPool.timer)
-          MqManager.MqCommandResponsePool.delete(message.traceId!)
+          this.MqCommandResponsePool.delete(message.traceId!)
         }
       })
   }
