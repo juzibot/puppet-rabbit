@@ -71,7 +71,10 @@ export type ContactCorporationRemarkRequest = {
 
 export type ContactCorporationRemarkResponse = {}
 
-export type ContactPayloadModifyRequest = Partial<payloads.Contact>
+export type ContactPayloadModifyRequest = {
+  contactId: string,
+  payload: Partial<payloads.Contact>
+}
 
 export type ContactPayloadModifyResponse = {}
 

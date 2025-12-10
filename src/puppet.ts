@@ -123,6 +123,16 @@ class PuppetRabbit extends PUPPET.Puppet {
     return payload
   }
 
+  override async contactPayloadModify(contactId: string, payload: Partial<PUPPET.payloads.Contact>): Promise<void> {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.contactPayloadModify,
+      data: {
+        contactId,
+        payload,
+      },
+    })
+  }
+
   override async contactAvatar(contactId: string, fileBox?: FileBoxInterface) {
     if (fileBox) {
       throw new Error('not supported')

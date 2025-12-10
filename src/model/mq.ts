@@ -27,6 +27,7 @@ export enum MqCommandType {
 
   contactPayload = 'contactPayload',
   contactList = 'contactList',
+  contactPayloadModify = 'contactPayloadModify',
 
   roomAdd = 'roomAdd',
   roomAvatar = 'roomAvatar',
@@ -120,6 +121,7 @@ export type PuppetRequestTypeMap = {
 
   [MqCommandType.contactList]: PuppetDTO.ContactListRequest
   [MqCommandType.contactPayload]: PuppetDTO.ContactPayloadRequest
+  [MqCommandType.contactPayloadModify]: PuppetDTO.ContactPayloadModifyRequest
 
   [MqCommandType.roomAdd]: PuppetDTO.RoomAddRequest
   [MqCommandType.roomAvatar]: PuppetDTO.RoomAvatarRequest
@@ -197,6 +199,7 @@ export type PuppetResponseTypeMap = {
 
   [MqCommandType.contactList]: PuppetDTO.ContactListResponse
   [MqCommandType.contactPayload]: PuppetDTO.ContactPayloadResponse
+  [MqCommandType.contactPayloadModify]: PuppetDTO.ContactPayloadModifyResponse
 
   [MqCommandType.roomAdd]: PuppetDTO.RoomAddResponse
   [MqCommandType.roomAvatar]: PuppetDTO.RoomAvatarResponse
