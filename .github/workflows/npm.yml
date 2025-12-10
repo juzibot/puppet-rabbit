@@ -2,6 +2,10 @@ name: NPM
 
 on: [push, pull_request]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   publish:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/v'))
