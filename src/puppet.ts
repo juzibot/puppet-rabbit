@@ -413,6 +413,16 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.miniProgram
   }
 
+  override async messageChatHistory(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageChatHistory,
+      data: {
+        messageId,
+      },
+    })
+    return response.history
+  }
+
   // friendship
 
   override async friendshipRawPayload(friendshipId: string) {
