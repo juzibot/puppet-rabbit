@@ -260,3 +260,21 @@ export type MessageSendDouyinOneClickPhoneCollectionRequest = {
 export type MessageSendDouyinOneClickPhoneCollectionResponse = {
   messageId?: string,
 }
+
+export type MessageSendProductRequest = {
+  conversationId: string,
+  productId: string,
+}
+
+export type MessageSendProductResponse = {
+  messageId?: string,
+}
+
+export type MessageSendOrderRequest = {
+  conversationId: string,
+  orderId: string,
+}
+
+export type MessageSendOrderResponse = {
+  messageId?: string,
+}

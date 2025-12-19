@@ -81,3 +81,33 @@ export type IntentCommentPayloadRequest = {
 export type IntentCommentPayloadResponse = {
   payload: payloads.IntentComment,
 }
+
+export type WxxdShopPayloadRequest = {}
+
+export type WxxdShopPayloadResponse = {
+  payload: payloads.WxxdShop,
+}
+
+export type ListWxxdProductsRequest = filters.PaginationRequest
+
+export type ListWxxdProductsResponse = filters.PaginationResponse<payloads.WxxdProduct[]>
+
+export type WxxdProductPayloadRequest = {
+  productId: string,
+}
+
+export type WxxdProductPayloadResponse = {
+  payload: payloads.WxxdProduct,
+}
+
+export type ListWxxdOrdersRequest = filters.PaginationRequest
+
+export type ListWxxdOrdersResponse = filters.PaginationResponse<payloads.WxxdOrder[]>
+
+export type WxxdOrderPayloadRequest = {
+  orderId: string,
+}
+
+export type WxxdOrderPayloadResponse = {
+  payload: payloads.WxxdOrder,
+}

@@ -67,6 +67,8 @@ export enum MqCommandType {
   messageSendConsultCard = 'messageSendConsultCard',
   messageSendDouyinOneClickPhoneCollection = 'messageSendDouyinOneClickPhoneCollection',
   messageSendPost = 'messageSendPost',
+  messageSendProduct = 'messageSendProduct',
+  messageSendOrder = 'messageSendOrder',
 
   listConsultCards = 'listConsultCards',
   messageConsultCard = 'messageConsultCard',
@@ -97,6 +99,12 @@ export enum MqCommandType {
 
   listIntentComments = 'listIntentComments',
   intentCommentPayload = 'intentCommentPayload',
+
+  wxxdShopPayload = 'wxxdShopPayload',
+  listWxxdProducts = 'listWxxdProducts',
+  wxxdProductPayload = 'wxxdProductPayload',
+  listWxxdOrders = 'listWxxdOrders',
+  wxxdOrderPayload = 'wxxdOrderPayload',
 }
 
 export interface MqCommandResponseWaiter {
@@ -162,6 +170,8 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardRequest
   [MqCommandType.messageSendDouyinOneClickPhoneCollection]: PuppetDTO.MessageSendDouyinOneClickPhoneCollectionRequest
   [MqCommandType.messageSendPost]: PuppetDTO.MessageSendPostRequest
+  [MqCommandType.messageSendProduct]: PuppetDTO.MessageSendProductRequest
+  [MqCommandType.messageSendOrder]: PuppetDTO.MessageSendOrderRequest
 
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsRequest
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardRequest
@@ -191,6 +201,12 @@ export type PuppetRequestTypeMap = {
 
   [MqCommandType.listIntentComments]: PuppetDTO.ListIntentCommentsRequest
   [MqCommandType.intentCommentPayload]: PuppetDTO.IntentCommentPayloadRequest
+
+  [MqCommandType.wxxdShopPayload]: PuppetDTO.WxxdShopPayloadRequest
+  [MqCommandType.listWxxdProducts]: PuppetDTO.ListWxxdProductsRequest
+  [MqCommandType.wxxdProductPayload]: PuppetDTO.WxxdProductPayloadRequest
+  [MqCommandType.listWxxdOrders]: PuppetDTO.ListWxxdOrdersRequest
+  [MqCommandType.wxxdOrderPayload]: PuppetDTO.WxxdOrderPayloadRequest
 }
 
 export type PuppetResponseTypeMap = {
@@ -241,7 +257,9 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardResponse
   [MqCommandType.messageSendDouyinOneClickPhoneCollection]: PuppetDTO.MessageSendDouyinOneClickPhoneCollectionResponse
   [MqCommandType.messageSendPost]: PuppetDTO.MessageSendPostResponse
-  
+  [MqCommandType.messageSendProduct]: PuppetDTO.MessageSendProductResponse
+  [MqCommandType.messageSendOrder]: PuppetDTO.MessageSendOrderResponse
+
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsResponse
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardResponse
   [MqCommandType.messageSendPremiumOnlineAppointmentCard]: PuppetDTO.MessageSendPremiumOnlineAppointmentCardResponse
@@ -270,4 +288,10 @@ export type PuppetResponseTypeMap = {
 
   [MqCommandType.listIntentComments]: PuppetDTO.ListIntentCommentsResponse
   [MqCommandType.intentCommentPayload]: PuppetDTO.IntentCommentPayloadResponse
+
+  [MqCommandType.wxxdShopPayload]: PuppetDTO.WxxdShopPayloadResponse
+  [MqCommandType.listWxxdProducts]: PuppetDTO.ListWxxdProductsResponse
+  [MqCommandType.wxxdProductPayload]: PuppetDTO.WxxdProductPayloadResponse
+  [MqCommandType.listWxxdOrders]: PuppetDTO.ListWxxdOrdersResponse
+  [MqCommandType.wxxdOrderPayload]: PuppetDTO.WxxdOrderPayloadResponse
 }
