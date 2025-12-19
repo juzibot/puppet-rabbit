@@ -367,6 +367,15 @@ export class MqManager extends EventEmitter {
       case 'contact-lead-filled':
         this.emit('contact-lead-filled', JSON.parse(data))
         break
+      case 'wxxd-shop':
+        this.emit('wxxd-shop', {})
+        break
+      case 'wxxd-product':
+        this.emit('wxxd-product', JSON.parse(data))
+        break
+      case 'wxxd-order':
+        this.emit('wxxd-order', JSON.parse(data))
+        break
       default:
         log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
     }

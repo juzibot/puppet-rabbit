@@ -327,7 +327,29 @@ class PuppetRabbit extends PUPPET.Puppet {
     })
     return response.result
   }
-  
+
+  override async messageSendWxxdProduct(conversationId: string, productId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendWxxdProduct,
+      data: {
+        conversationId,
+        productId,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendWxxdOrder(conversationId: string, orderId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendWxxdOrder,
+      data: {
+        conversationId,
+        orderId,
+      },
+    })
+    return response.messageId
+  }
+
   // message payload
 
 
@@ -831,6 +853,50 @@ class PuppetRabbit extends PUPPET.Puppet {
     return data.payload
   }
 
+  override async wxxdShopPayload(): Promise<PUPPET.payloads.WxxdShop> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.wxxdShopPayload,
+      data: {},
+    })
+    return data.payload
+  }
+
+  override async listWxxdProducts(query: PUPPET.filters.PaginationRequest): Promise<PUPPET.filters.PaginationResponse<PUPPET.payloads.WxxdProduct[]>> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.listWxxdProducts,
+      data: query
+    })
+    return data
+  }
+
+  override async wxxdProductPayload(id: string): Promise<PUPPET.payloads.WxxdProduct> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.wxxdProductPayload,
+      data: {
+        productId: id,
+      }
+    })
+    return data.payload
+  }
+
+  override async listWxxdOrders(query: PUPPET.filters.PaginationRequest): Promise<PUPPET.filters.PaginationResponse<PUPPET.payloads.WxxdOrder[]>> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.listWxxdOrders,
+      data: query
+    })
+    return data
+  }
+
+  override async wxxdOrderPayload(id: string): Promise<PUPPET.payloads.WxxdOrder> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.wxxdOrderPayload,
+      data: {
+        orderId: id,
+      }
+    })
+    return data.payload
+  }
+
   initEvents() {
     this.mqManager
       .on('dong', (data: PUPPET.payloads.EventDong) => {
@@ -892,6 +958,15 @@ class PuppetRabbit extends PUPPET.Puppet {
       })
       .on('contact-lead-filled', (data: PUPPET.payloads.EventContactLeadFilled) => {
         this.emit('contact-lead-filled', data)
+      })
+      .on('wxxd-shop', () => {
+        this.emit('wxxd-shop', {})
+      })
+      .on('wxxd-product', (data: PUPPET.payloads.EventWxxdProduct) => {
+        this.emit('wxxd-product', data)
+      })
+      .on('wxxd-order', (data: PUPPET.payloads.EventWxxdOrder) => {
+        this.emit('wxxd-order', data)
       })
   }
 
