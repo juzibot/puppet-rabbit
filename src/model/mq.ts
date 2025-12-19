@@ -67,8 +67,8 @@ export enum MqCommandType {
   messageSendConsultCard = 'messageSendConsultCard',
   messageSendDouyinOneClickPhoneCollection = 'messageSendDouyinOneClickPhoneCollection',
   messageSendPost = 'messageSendPost',
-  messageSendProduct = 'messageSendProduct',
-  messageSendOrder = 'messageSendOrder',
+  messageSendWxxdProduct = 'messageSendWxxdProduct',
+  messageSendWxxdOrder = 'messageSendWxxdOrder',
 
   listConsultCards = 'listConsultCards',
   messageConsultCard = 'messageConsultCard',
@@ -170,8 +170,8 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardRequest
   [MqCommandType.messageSendDouyinOneClickPhoneCollection]: PuppetDTO.MessageSendDouyinOneClickPhoneCollectionRequest
   [MqCommandType.messageSendPost]: PuppetDTO.MessageSendPostRequest
-  [MqCommandType.messageSendProduct]: PuppetDTO.MessageSendProductRequest
-  [MqCommandType.messageSendOrder]: PuppetDTO.MessageSendOrderRequest
+  [MqCommandType.messageSendWxxdProduct]: PuppetDTO.MessageSendWxxdProductRequest
+  [MqCommandType.messageSendWxxdOrder]: PuppetDTO.MessageSendWxxdOrderRequest
 
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsRequest
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardRequest
@@ -257,8 +257,8 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageSendConsultCard]: PuppetDTO.MessageSendConsultCardResponse
   [MqCommandType.messageSendDouyinOneClickPhoneCollection]: PuppetDTO.MessageSendDouyinOneClickPhoneCollectionResponse
   [MqCommandType.messageSendPost]: PuppetDTO.MessageSendPostResponse
-  [MqCommandType.messageSendProduct]: PuppetDTO.MessageSendProductResponse
-  [MqCommandType.messageSendOrder]: PuppetDTO.MessageSendOrderResponse
+  [MqCommandType.messageSendWxxdProduct]: PuppetDTO.MessageSendWxxdProductResponse
+  [MqCommandType.messageSendWxxdOrder]: PuppetDTO.MessageSendWxxdOrderResponse
 
   [MqCommandType.listConsultCards]: PuppetDTO.ListConsultCardsResponse
   [MqCommandType.messageConsultCard]: PuppetDTO.MessageConsultCardResponse

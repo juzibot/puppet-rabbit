@@ -261,20 +261,20 @@ export type MessageSendDouyinOneClickPhoneCollectionResponse = {
   messageId?: string,
 }
 
-export type MessageSendProductRequest = {
+export type MessageSendWxxdProductRequest = {
   conversationId: string,
   productId: string,
 }
 
-export type MessageSendProductResponse = {
+export type MessageSendWxxdProductResponse = {
   messageId?: string,
 }
 
-export type MessageSendOrderRequest = {
+export type MessageSendWxxdOrderRequest = {
   conversationId: string,
   orderId: string,
 }
 
-export type MessageSendOrderResponse = {
+export type MessageSendWxxdOrderResponse = {
   messageId?: string,
 }

@@ -327,7 +327,29 @@ class PuppetRabbit extends PUPPET.Puppet {
     })
     return response.result
   }
-  
+
+  override async messageSendWxxdProduct(conversationId: string, productId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendWxxdProduct,
+      data: {
+        conversationId,
+        productId,
+      },
+    })
+    return response.messageId
+  }
+
+  override async messageSendWxxdOrder(conversationId: string, orderId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendWxxdOrder,
+      data: {
+        conversationId,
+        orderId,
+      },
+    })
+    return response.messageId
+  }
+
   // message payload
 
 
