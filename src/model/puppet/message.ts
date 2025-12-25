@@ -180,6 +180,22 @@ export type MessagePreviewResponse = {
   imageFilebox: string,
 }
 
+export type MessageWxxdProductRequest = {
+  messageId: string,
+}
+
+export type MessageWxxdProductResponse = {
+  product: payloads.WxxdProduct,
+}
+
+export type MessageWxxdOrderRequest = {
+  messageId: string,
+}
+
+export type MessageWxxdOrderResponse = {
+  order: payloads.WxxdOrder,
+}
+
 export type GetMessageBroadcastTargetRequest = {}
 
 export type GetMessageBroadcastTargetResponse = {
