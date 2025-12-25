@@ -85,6 +85,8 @@ export enum MqCommandType {
   messageContact = 'messageContact',
   messageMiniProgram = 'messageMiniProgram',
   messageChatHistory = 'messageChatHistory',
+  messageWxxdProduct = 'messageWxxdProduct',
+  messageWxxdOrder = 'messageWxxdOrder',
 
   friendshipPayload = 'friendshipPayload',
 
@@ -188,6 +190,8 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageContact]: PuppetDTO.MessageContactRequest
   [MqCommandType.messageMiniProgram]: PuppetDTO.MessageMiniProgramRequest
   [MqCommandType.messageChatHistory]: PuppetDTO.MessageChatHistoryRequest
+  [MqCommandType.messageWxxdProduct]: PuppetDTO.MessageWxxdProductRequest
+  [MqCommandType.messageWxxdOrder]: PuppetDTO.MessageWxxdOrderRequest
 
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadRequest
 
@@ -275,6 +279,8 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageContact]: PuppetDTO.MessageContactResponse
   [MqCommandType.messageMiniProgram]: PuppetDTO.MessageMiniProgramResponse
   [MqCommandType.messageChatHistory]: PuppetDTO.MessageChatHistoryResponse
+  [MqCommandType.messageWxxdProduct]: PuppetDTO.MessageWxxdProductResponse
+  [MqCommandType.messageWxxdOrder]: PuppetDTO.MessageWxxdOrderResponse
   
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadResponse
 
