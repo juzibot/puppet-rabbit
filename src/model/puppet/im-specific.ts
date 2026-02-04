@@ -123,7 +123,7 @@ export type UpdateWxxdMerchantNotesResponse = {}
 export type GetWxxdOrderDeliveryCompanyListRequest = {}
 
 export type GetWxxdOrderDeliveryCompanyListResponse = {
-  deliveryCompanyList: WxxdOrderDeliveryCompanyPayload[],
+  deliveryCompanyList: payloads.WxxdOrderDeliveryCompany[],
 }
 
 export type WxxdOrderDeliverySendRequest = {

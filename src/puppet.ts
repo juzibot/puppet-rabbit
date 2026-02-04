@@ -5,7 +5,7 @@ import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
 import { stringifyFileBox } from './util/file.js'
-import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload, WxxdOrderDeliveryCompanyPayload, WxxdOrderDeliverySendRequest, WxxdOrderGenAfterSaleOrderRequest } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
+import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload, WxxdOrderDeliverySendRequest, WxxdOrderGenAfterSaleOrderRequest } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
   mqUri: string
@@ -927,7 +927,7 @@ class PuppetRabbit extends PUPPET.Puppet {
     })
   }
 
-  override async getWxxdOrderDeliveryCompanyList(): Promise<WxxdOrderDeliveryCompanyPayload[]> {
+  override async getWxxdOrderDeliveryCompanyList(): Promise<PUPPET.payloads.WxxdOrderDeliveryCompany[]> {
     const data = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.getWxxdOrderDeliveryCompanyList,
       data: {}
