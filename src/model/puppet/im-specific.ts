@@ -1,5 +1,4 @@
 import { filters, payloads, types } from "@juzi/wechaty-puppet"
-import { WxxdOrderDeliveryCompanyPayload } from "@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js"
 
 export type GetContactExternalUserIdRequest = {
   contactIds: string[],
