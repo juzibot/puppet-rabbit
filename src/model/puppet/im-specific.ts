@@ -111,3 +111,31 @@ export type WxxdOrderPayloadRequest = {
 export type WxxdOrderPayloadResponse = {
   payload: payloads.WxxdOrder,
 }
+
+export type UpdateWxxdMerchantNotesRequest = {
+  orderId: string,
+  merchantNotes: string,
+}
+
+export type UpdateWxxdMerchantNotesResponse = {}
+
+export type GetWxxdOrderDeliveryCompanyListRequest = {}
+
+export type GetWxxdOrderDeliveryCompanyListResponse = {
+  deliveryCompanyList: payloads.WxxdOrderDeliveryCompany[],
+}
+
+export type WxxdOrderDeliverySendRequest = {
+  orderId: string,
+  deliveryId: string,
+  waybillId: string,
+}
+
+export type WxxdOrderDeliverySendResponse = {}
+
+export type WxxdOrderGenAfterSaleOrderRequest = {
+  orderId: string,
+  reason: string,
+}
+
+export type WxxdOrderGenAfterSaleOrderResponse = {}

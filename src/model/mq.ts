@@ -107,6 +107,10 @@ export enum MqCommandType {
   wxxdProductPayload = 'wxxdProductPayload',
   listWxxdOrders = 'listWxxdOrders',
   wxxdOrderPayload = 'wxxdOrderPayload',
+  updateWxxdMerchantNotes = 'updateWxxdMerchantNotes',
+  getWxxdOrderDeliveryCompanyList = 'getWxxdOrderDeliveryCompanyList',
+  wxxdOrderDeliverySend = 'wxxdOrderDeliverySend',
+  wxxdOrderGenAfterSaleOrder = 'wxxdOrderGenAfterSaleOrder',
 }
 
 export interface MqCommandResponseWaiter {
@@ -211,6 +215,10 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.wxxdProductPayload]: PuppetDTO.WxxdProductPayloadRequest
   [MqCommandType.listWxxdOrders]: PuppetDTO.ListWxxdOrdersRequest
   [MqCommandType.wxxdOrderPayload]: PuppetDTO.WxxdOrderPayloadRequest
+  [MqCommandType.updateWxxdMerchantNotes]: PuppetDTO.UpdateWxxdMerchantNotesRequest
+  [MqCommandType.getWxxdOrderDeliveryCompanyList]: PuppetDTO.GetWxxdOrderDeliveryCompanyListRequest
+  [MqCommandType.wxxdOrderDeliverySend]: PuppetDTO.WxxdOrderDeliverySendRequest
+  [MqCommandType.wxxdOrderGenAfterSaleOrder]: PuppetDTO.WxxdOrderGenAfterSaleOrderRequest
 }
 
 export type PuppetResponseTypeMap = {
@@ -300,4 +308,8 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.wxxdProductPayload]: PuppetDTO.WxxdProductPayloadResponse
   [MqCommandType.listWxxdOrders]: PuppetDTO.ListWxxdOrdersResponse
   [MqCommandType.wxxdOrderPayload]: PuppetDTO.WxxdOrderPayloadResponse
+  [MqCommandType.updateWxxdMerchantNotes]: PuppetDTO.UpdateWxxdMerchantNotesResponse
+  [MqCommandType.getWxxdOrderDeliveryCompanyList]: PuppetDTO.GetWxxdOrderDeliveryCompanyListResponse
+  [MqCommandType.wxxdOrderDeliverySend]: PuppetDTO.WxxdOrderDeliverySendResponse
+  [MqCommandType.wxxdOrderGenAfterSaleOrder]: PuppetDTO.WxxdOrderGenAfterSaleOrderResponse
 }
