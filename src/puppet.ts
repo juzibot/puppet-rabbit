@@ -5,7 +5,7 @@ import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
 import { stringifyFileBox } from './util/file.js'
-import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
+import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload, WxxdOrderDeliveryCompanyPayload, WxxdOrderDeliverySendRequest, WxxdOrderGenAfterSaleOrderRequest } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
   mqUri: string
@@ -915,6 +915,45 @@ class PuppetRabbit extends PUPPET.Puppet {
       }
     })
     return data.payload
+  }
+
+  override async updateWxxdMerchantnotes(orderId: string, merchantNotes: string): Promise<void> {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.updateWxxdMerchantNotes,
+      data: {
+        orderId,
+        merchantNotes,
+      }
+    })
+  }
+
+  override async getWxxdOrderDeliveryCompanyList(): Promise<WxxdOrderDeliveryCompanyPayload[]> {
+    const data = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.getWxxdOrderDeliveryCompanyList,
+      data: {}
+    })
+    return data.deliveryCompanyList
+  }
+
+  override async wxxdOrderDeliverySend(req: WxxdOrderDeliverySendRequest): Promise<void> {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.wxxdOrderDeliverySend,
+      data: {
+        orderId: req.orderId,
+        deliveryId: req.deliveryId,
+        waybillId: req.waybillId,
+      }
+    })
+  }
+
+  override async wxxdOrderGenAfterSaleOrder(req: WxxdOrderGenAfterSaleOrderRequest): Promise<void> {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.wxxdOrderGenAfterSaleOrder,
+      data: {
+        orderId: req.orderId,
+        reason: req.reason,
+      }
+    })
   }
 
   initEvents() {
