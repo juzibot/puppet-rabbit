@@ -9,6 +9,12 @@ export type ConversationReadMarkResponse = {
   hasRead?: boolean,
 }
 
+export type EndConversationRequest = {
+  conversationId: string,
+}
+
+export type EndConversationResponse = {}
+
 export type MessageContactRequest = {
   messageId: string,
 }

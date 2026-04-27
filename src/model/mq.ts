@@ -56,6 +56,7 @@ export enum MqCommandType {
   roomInvitationPayload = 'roomInvitationPayload',
 
   conversationReadMark = 'conversationReadMark',
+  endConversation = 'endConversation',
   messagePayload = 'messagePayload',
   messageSendText = 'messageSendText',
   messageSendFile = 'messageSendFile',
@@ -165,6 +166,7 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.roomInvitationPayload]: PuppetDTO.RoomInvitationPayloadRequest
 
   [MqCommandType.conversationReadMark]: PuppetDTO.ConversationReadMarkRequest
+  [MqCommandType.endConversation]: PuppetDTO.EndConversationRequest
   [MqCommandType.messagePayload]: PuppetDTO.MessagePayloadRequest
   [MqCommandType.messageSendText]: PuppetDTO.MessageSendTextRequest
   [MqCommandType.messageSendFile]: PuppetDTO.MessageSendFileRequest
@@ -258,6 +260,7 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.roomInvitationPayload]: PuppetDTO.RoomInvitationPayloadResponse
 
   [MqCommandType.conversationReadMark]: PuppetDTO.ConversationReadMarkResponse
+  [MqCommandType.endConversation]: PuppetDTO.EndConversationResponse
   [MqCommandType.messagePayload]: PuppetDTO.MessagePayloadResponse
   [MqCommandType.messageSendText]: PuppetDTO.MessageSendTextResponse
   [MqCommandType.messageSendFile]: PuppetDTO.MessageSendFileResponse

@@ -154,6 +154,15 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.hasRead
   }
 
+  override async endConversation(conversationId: string) {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.endConversation,
+      data: {
+        conversationId,
+      },
+    })
+  }
+
   // message send
 
   override async messageSendText(conversationId: string, text: string, option?: PUPPET.types.MessageSendTextOptions) {
