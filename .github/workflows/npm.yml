@@ -19,8 +19,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       # Ensure npm 11.5.1 or later is installed
-      - name: Update npm
-        run: npm install -g npm@latest
+      - name: Install npm
+        run: curl -qL https://www.npmjs.com/install.sh | sh
 
       - name: Install Dependencies
         run: npm install
