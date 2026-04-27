@@ -1,6 +1,6 @@
 {
   "name": "@juzi/wechaty-puppet-rabbit",
-  "version": "1.0.45",
+  "version": "1.0.46",
   "type": "module",
   "description": "",
   "main": "index.js",
