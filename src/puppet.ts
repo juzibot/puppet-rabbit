@@ -16,7 +16,7 @@ export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
 const PRE = 'PuppetRabbit'
 
 class PuppetRabbit extends PUPPET.Puppet {
-  private readonly mqManager = new MqManager()
+  private readonly mqManager: MqManager
 
   private heartbeatTimer: NodeJS.Timer | undefined
 
@@ -25,6 +25,7 @@ class PuppetRabbit extends PUPPET.Puppet {
     if (!options.mqUri || !options.token) {
       throw new Error(`PuppetRabbit need mqUri and token`)
     }
+    this.mqManager = new MqManager(this.log)
     this.initEvents()
   }
 

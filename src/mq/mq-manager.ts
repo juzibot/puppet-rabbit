@@ -1,4 +1,5 @@
 import { log, types } from '@juzi/wechaty-puppet'
+import type { LoggerLike } from '@juzi/wechaty-puppet'
 import { ConsumeMessage } from 'amqplib'
 import Onirii from 'onirii'
 import { AmqpChannelService } from 'onirii/lib/service/amqp/amqp-channel-service'
@@ -40,10 +41,18 @@ export class MqManager extends EventEmitter {
   private exchangeBaseName: string | undefined
   private mqUri: string | undefined
 
+  private readonly _log: LoggerLike
+
   private MqCommandResponsePool = new Map<
     string,
     MqCommandResponseWaiter
   >()
+
+  constructor (logger?: LoggerLike) {
+    super()
+    this._log = logger ?? log
+    this._log.verbose(PRE, 'constructor()')
+  }
 
   private async consumption(
     msg: ConsumeMessage | null,
