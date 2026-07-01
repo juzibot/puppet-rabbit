@@ -1,4 +1,5 @@
 import { log, types } from '@juzi/wechaty-puppet'
+import type { LoggerLike } from '@juzi/wechaty-puppet'
 import { ConsumeMessage } from 'amqplib'
 import Onirii from 'onirii'
 import { AmqpChannelService } from 'onirii/lib/service/amqp/amqp-channel-service'
@@ -40,16 +41,24 @@ export class MqManager extends EventEmitter {
   private exchangeBaseName: string | undefined
   private mqUri: string | undefined
 
+  private readonly _log: LoggerLike
+
   private MqCommandResponsePool = new Map<
     string,
     MqCommandResponseWaiter
   >()
 
+  constructor (logger?: LoggerLike) {
+    super()
+    this._log = logger ?? log
+    this._log.verbose(PRE, 'constructor()')
+  }
+
   private async consumption(
     msg: ConsumeMessage | null,
     channel: AmqpChannelService | undefined,
   ) {
-    log.verbose(PRE, `consuming content: ${msg?.content.toString()}`)
+    this._log.verbose(PRE, `consuming content: ${msg?.content.toString()}`)
     const messageString = msg?.content.toString()
     if (!messageString) {
       await channel?.ackMessage(msg!)
@@ -61,7 +70,7 @@ export class MqManager extends EventEmitter {
       if (message.type === MqMessageType.command) {
         const waiter = this.MqCommandResponsePool.get(message.traceId)
         if (!waiter) {
-          log.warn(PRE, `MqCommandResponsePool Not Found ${message.traceId}`)
+          this._log.warn(PRE, `MqCommandResponsePool Not Found ${message.traceId}`)
           await channel?.ackMessage(msg!)
           return
         }
@@ -75,14 +84,14 @@ export class MqManager extends EventEmitter {
         this.handleEvent(message.eventType!, message.data)
       }
     } catch (e) {
-      log.error(PRE, `consumption() error: ${(e as Error).stack}`)
+      this._log.error(PRE, `consumption() error: ${(e as Error).stack}`)
     }
     await channel?.ackMessage(msg!)
   }
 
   public async init(option: {token: string, mqUri: string, exchangeBaseName: string}) {
     const { token, mqUri, exchangeBaseName } = option
-    log.info(PRE, `init(${token})`)
+    this._log.info(PRE, `init(${token})`)
     if (!this.puppetConnection) {
       if (!(token && mqUri)) {
         throw new Error(`init() need token and mqUri`)
@@ -105,7 +114,7 @@ export class MqManager extends EventEmitter {
   }
 
   public async destroy() {
-    log.info(PRE, `destroy(${this.token})`)
+    this._log.info(PRE, `destroy(${this.token})`)
     this.puppetConnection?.close()
     this.puppetConnection = undefined
     this.puppetChannel?.close()
@@ -113,14 +122,14 @@ export class MqManager extends EventEmitter {
   }
 
   private async initConnect() {
-    log.info(PRE, 'initConnect()')
+    this._log.info(PRE, 'initConnect()')
     await this.puppetConnection!.ready()
     await this.prepareConnectListener()
-    log.info(PRE, 'initConnect() connected mq service...')
+    this._log.info(PRE, 'initConnect() connected mq service...')
   }
 
   private async initChannel() {
-    log.info(PRE, 'initChannel()')
+    this._log.info(PRE, 'initChannel()')
     this.puppetChannel = await this.createChannelService(10)
     await this.prepareChannelListener()
     await this.prepareQueue(this.puppetChannel)
@@ -136,7 +145,7 @@ export class MqManager extends EventEmitter {
   }
 
   private async createChannelService(prefetch: number) {
-    log.info(PRE, 'Creating Channel ...')
+    this._log.info(PRE, 'Creating Channel ...')
     const channel = await this.puppetConnection?.createChannelService(false)
     if (channel) {
       await channel.setPrefetchCount(prefetch)
@@ -148,16 +157,16 @@ export class MqManager extends EventEmitter {
 
   private async prepareChannelListener() {
     this.puppetChannel?.addCloseListener(() => {
-      log.info(`puppetChannel on close listener`)
+      this._log.info(`puppetChannel on close listener`)
       void this.reconnectChannel()
     })
   }
 
   private async reconnectMainConnect(err: Error, type: LISTENER_TYPE) {
-    log.info(PRE, `reconnectMainConnect(${LISTENER_TYPE[type]})`)
+    this._log.info(PRE, `reconnectMainConnect(${LISTENER_TYPE[type]})`)
     this.connected = false
     if (this.restartingConnection) {
-      log.error(
+      this._log.error(
         PRE,
         `reconnectMainConnect(${LISTENER_TYPE[type]}) under processing...`,
       )
@@ -165,7 +174,7 @@ export class MqManager extends EventEmitter {
     }
 
     this.restartingConnection = true
-    log.error(
+    this._log.error(
       PRE,
       `reconnectMainConnect(${LISTENER_TYPE[type]}) MQ Service Connect Receive ${LISTENER_TYPE[type]} event: ${err}`,
     )
@@ -178,7 +187,7 @@ export class MqManager extends EventEmitter {
       })
       await this.startConsume()
     } catch (e) {
-      log.error(
+      this._log.error(
         PRE,
         `reconnectMainConnect(${
           LISTENER_TYPE[type] || type
@@ -189,25 +198,25 @@ export class MqManager extends EventEmitter {
       this.restartingConnection = false
     }
 
-    log.info(
+    this._log.info(
       PRE,
       `reconnectMainConnect(${LISTENER_TYPE[type]}) Reconnected MQ Service Done.`,
     )
   }
 
   public async reconnectChannel(): Promise<void> {
-    log.info(PRE, `reconnectChannel()`)
+    this._log.info(PRE, `reconnectChannel()`)
     if (this.restartingConnection) {
-      log.error(PRE, `reconnectChannel() restart connect under processing...`)
+      this._log.error(PRE, `reconnectChannel() restart connect under processing...`)
       return
     }
     if (this.restartingChannel) {
-      log.error(PRE, `reconnectChannel(}) restart channel under processing...`)
+      this._log.error(PRE, `reconnectChannel(}) restart channel under processing...`)
       return
     }
 
     this.restartingChannel = true
-    log.error(
+    this._log.error(
       PRE,
       `reconnectChannel(}) MQ Service Channel Connect Receive Close event.`,
     )
@@ -217,13 +226,13 @@ export class MqManager extends EventEmitter {
       this.puppetChannel = await this.createChannelService(10)
       await this.startConsumer()
     } catch (e) {
-      log.error(PRE, `reconnectChannel(}) Reconnect MQ Service Failed: ${e}`)
+      this._log.error(PRE, `reconnectChannel(}) Reconnect MQ Service Failed: ${e}`)
       return this.reconnectChannel()
     } finally {
       this.restartingChannel = false
     }
 
-    log.info(PRE, `reconnectChannel(}) Reconnected MQ Service Done.`)
+    this._log.info(PRE, `reconnectChannel(}) Reconnected MQ Service Done.`)
   }
 
   public async startConsume() {
@@ -231,21 +240,21 @@ export class MqManager extends EventEmitter {
       if (this.connected) {
         break
       }
-      log.warn(PRE, 'startConsume() MQ Server Connect Not Ready Yet')
+      this._log.warn(PRE, 'startConsume() MQ Server Connect Not Ready Yet')
       await sleep(5 * SECOND)
     }
     await this.stopConsume()
-    log.info(PRE, 'startConsume() Creating Consumer ...')
+    this._log.info(PRE, 'startConsume() Creating Consumer ...')
     await this.startConsumer()
   }
 
   public async stopConsume() {
-    log.info(PRE, 'stopConsume() Stopping Consumer ...')
+    this._log.info(PRE, 'stopConsume() Stopping Consumer ...')
     this.puppetChannel?.killConsume('puppetConsumer')
   }
 
   private async startConsumer() {
-    log.info(PRE, 'startConsumer()')
+    this._log.info(PRE, 'startConsumer()')
     this.puppetChannel?.consume(
       getTokenQueueName(this.token!),
       (msg) => void this.consumption(msg, this.puppetChannel),
@@ -259,7 +268,7 @@ export class MqManager extends EventEmitter {
     if (!message.traceId) {
       message.traceId = v4()
     }
-    log.verbose(PRE, `sendToServer(${JSON.stringify(message)})`)
+    this._log.verbose(PRE, `sendToServer(${JSON.stringify(message)})`)
     this.puppetChannel?.sendMessageToExchange(
       getServerExchangeName(this.exchangeBaseName!),
       'command',
@@ -284,7 +293,7 @@ export class MqManager extends EventEmitter {
       this.MqCommandResponsePool.set(message.traceId!, waiter)
     })
       .then((data) => {
-        log.verbose(PRE, `handleResponse(${JSON.stringify(data)})`)
+        this._log.verbose(PRE, `handleResponse(${JSON.stringify(data)})`)
         return data
       })
       .finally(() => {
@@ -309,13 +318,13 @@ export class MqManager extends EventEmitter {
   }
 
   private handleEvent(eventType: types.PuppetEventName, data: string) {
-    log.verbose(PRE, `handleEvent(${eventType}, ${data})`)
+    this._log.verbose(PRE, `handleEvent(${eventType}, ${data})`)
     switch (eventType) {
       case 'dong':
         this.emit('dong', JSON.parse(data))
         break
       case 'login':
-        log.info(PRE, `receive login event: ${data}`)
+        this._log.info(PRE, `receive login event: ${data}`)
         this.emit('login', JSON.parse(data))
         break
       case 'post-comment':
@@ -328,7 +337,7 @@ export class MqManager extends EventEmitter {
         this.emit('dirty', JSON.parse(data))
         break
       case 'logout':
-        log.info(PRE, `receive logout event: ${data}`)
+        this._log.info(PRE, `receive logout event: ${data}`)
         this.emit('logout', JSON.parse(data))
         break
       case 'ready':
@@ -377,13 +386,13 @@ export class MqManager extends EventEmitter {
         this.emit('wxxd-order', JSON.parse(data))
         break
       default:
-        log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
+        this._log.warn(PRE, `handleEvent(${eventType}, ${data}) Not Support`)
     }
   }
 
   private async prepareQueue(channel: AmqpChannelService) {
     if (!channel) {
-      log.warn(PRE, `prepare() need channel`)
+      this._log.warn(PRE, `prepare() need channel`)
       return
     }
     await channel.initMetaConfigure({
