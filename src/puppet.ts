@@ -1,6 +1,5 @@
 import * as PUPPET from '@juzi/wechaty-puppet'
 import { MqManager } from './mq/mq-manager.js'
-import { log } from '@juzi/wechaty-puppet'
 import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
@@ -38,7 +37,7 @@ class PuppetRabbit extends PUPPET.Puppet {
   }
 
   override async onStart(): Promise<void> {
-    log.verbose(PRE, 'onStart()')
+    this.log.verbose(PRE, 'onStart()')
     await this.mqManager.init({
       token: this.options.token,
       mqUri: this.options.mqUri,
@@ -54,7 +53,7 @@ class PuppetRabbit extends PUPPET.Puppet {
   }
 
   override async onStop(): Promise<void> {
-    log.verbose(PRE, 'onStop()')
+    this.log.verbose(PRE, 'onStop()')
     await this.mqManager.destroy()
     this.stopHeartbeat()
   }
@@ -987,7 +986,7 @@ class PuppetRabbit extends PUPPET.Puppet {
       })
       .on('logout', (data: PUPPET.payloads.EventLogout) => {
         this.logout(data.data, true).catch(e =>
-          log.error('PuppetService', 'onGrpcStreamEvent() this.logout() rejection %s',
+          this.log.error('PuppetService', 'onGrpcStreamEvent() this.logout() rejection %s',
             (e as Error).message,
           )
         )
