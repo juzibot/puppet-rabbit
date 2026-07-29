@@ -60,6 +60,7 @@ export enum MqCommandType {
   messagePayload = 'messagePayload',
   messageSendText = 'messageSendText',
   messageSendFile = 'messageSendFile',
+  messageSendEmail = 'messageSendEmail',
   messageSendMiniProgram = 'messageSendMiniProgram',
   messageSendUrl = 'messageSendUrl',
   messageSendLocation = 'messageSendLocation',
@@ -81,6 +82,7 @@ export enum MqCommandType {
 
   messageImage = 'messageImage',
   messageFile = 'messageFile',
+  messageEmail = 'messageEmail',
   messageUrl = 'messageUrl',
   messageLocation = 'messageLocation',
   messageContact = 'messageContact',
@@ -170,6 +172,7 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messagePayload]: PuppetDTO.MessagePayloadRequest
   [MqCommandType.messageSendText]: PuppetDTO.MessageSendTextRequest
   [MqCommandType.messageSendFile]: PuppetDTO.MessageSendFileRequest
+  [MqCommandType.messageSendEmail]: PuppetDTO.MessageSendEmailRequest
   [MqCommandType.messageSendMiniProgram]: PuppetDTO.MessageSendMiniProgramRequest
   [MqCommandType.messageSendUrl]: PuppetDTO.MessageSendUrlRequest
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationRequest
@@ -191,6 +194,7 @@ export type PuppetRequestTypeMap = {
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageRequest
   [MqCommandType.messageFile]: PuppetDTO.MessageFileRequest
+  [MqCommandType.messageEmail]: PuppetDTO.MessageEmailRequest
   [MqCommandType.messageUrl]: PuppetDTO.MessageUrlRequest
   [MqCommandType.messageLocation]: PuppetDTO.MessageLocationRequest
   [MqCommandType.messageContact]: PuppetDTO.MessageContactRequest
@@ -264,6 +268,7 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messagePayload]: PuppetDTO.MessagePayloadResponse
   [MqCommandType.messageSendText]: PuppetDTO.MessageSendTextResponse
   [MqCommandType.messageSendFile]: PuppetDTO.MessageSendFileResponse
+  [MqCommandType.messageSendEmail]: PuppetDTO.MessageSendEmailResponse
   [MqCommandType.messageSendMiniProgram]: PuppetDTO.MessageSendMiniProgramResponse
   [MqCommandType.messageSendUrl]: PuppetDTO.MessageSendUrlResponse
   [MqCommandType.messageSendLocation]: PuppetDTO.MessageSendLocationResponse
@@ -285,6 +290,7 @@ export type PuppetResponseTypeMap = {
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageResponse
   [MqCommandType.messageFile]: PuppetDTO.MessageFileResponse
+  [MqCommandType.messageEmail]: PuppetDTO.MessageEmailResponse
   [MqCommandType.messageUrl]: PuppetDTO.MessageUrlResponse
   [MqCommandType.messageLocation]: PuppetDTO.MessageLocationResponse
   [MqCommandType.messageContact]: PuppetDTO.MessageContactResponse

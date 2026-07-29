@@ -25,10 +25,19 @@ export type MessageContactResponse = {
 
 export type MessageFileRequest = {
   messageId: string,
+  index?: number,
 }
 
 export type MessageFileResponse = {
   fileFilebox: string,
+}
+
+export type MessageEmailRequest = {
+  messageId: string,
+}
+
+export type MessageEmailResponse = {
+  email: payloads.Email,
 }
 
 export type MessageImageRequest = {
@@ -112,6 +121,15 @@ export type MessageSendFileRequest = {
 }
 
 export type MessageSendFileResponse = {
+  messageId?: string,
+}
+
+export type MessageSendEmailRequest = {
+  conversationId: string,
+  email: payloads.Email,
+}
+
+export type MessageSendEmailResponse = {
   messageId?: string,
 }
 
