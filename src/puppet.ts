@@ -3,7 +3,7 @@ import { MqManager } from './mq/mq-manager.js'
 import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
-import { stringifyFileBox } from './util/file.js'
+import { stringifyFileBox, toSerializableFileBox } from './util/file.js'
 import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload, WxxdOrderDeliverySendRequest, WxxdOrderGenAfterSaleOrderRequest } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
@@ -187,6 +187,38 @@ class PuppetRabbit extends PUPPET.Puppet {
       },
     })
     return response.messageId
+  }
+
+  override async messageSendEmail(conversationId: string, email: PUPPET.payloads.Email) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageSendEmail,
+      data: {
+        conversationId,
+        email: await this.serializeEmailForSend(email),
+      },
+    })
+    return response.messageId
+  }
+
+  private async serializeEmailForSend(email: PUPPET.payloads.Email): Promise<PUPPET.payloads.Email> {
+    if (!email.attachments?.length) {
+      return email
+    }
+    const attachments = await Promise.all(
+      email.attachments.map(async (attachment) => {
+        if (!attachment.fileBox) {
+          return attachment
+        }
+        return {
+          ...attachment,
+          fileBox: await toSerializableFileBox(attachment.fileBox),
+        }
+      }),
+    )
+    return {
+      ...email,
+      attachments,
+    }
   }
 
   override async messageSendMiniProgram(conversationId: string, miniProgram: PUPPET.payloads.MiniProgram) {
@@ -394,14 +426,25 @@ class PuppetRabbit extends PUPPET.Puppet {
     return FileBox.fromJSON(response.imageFilebox)
   }
 
-  override async messageFile(messageId: string) {
+  override async messageFile(messageId: string, index?: number) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageFile,
       data: {
         messageId,
+        index,
       },
     })
     return FileBox.fromJSON(response.fileFilebox)
+  }
+
+  override async messageEmail(messageId: string) {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.messageEmail,
+      data: {
+        messageId,
+      },
+    })
+    return response.email
   }
 
   override async messageUrl(messageId: string) {
