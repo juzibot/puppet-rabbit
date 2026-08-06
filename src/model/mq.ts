@@ -92,6 +92,7 @@ export enum MqCommandType {
   messageWxxdOrder = 'messageWxxdOrder',
 
   friendshipPayload = 'friendshipPayload',
+  friendshipSearchHandle = 'friendshipSearchHandle',
 
   postSearch = 'postSearch',
   postPayload = 'postPayload',
@@ -204,6 +205,7 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messageWxxdOrder]: PuppetDTO.MessageWxxdOrderRequest
 
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadRequest
+  [MqCommandType.friendshipSearchHandle]: PuppetDTO.FriendshipSearchHandleRequest
 
   [MqCommandType.postSearch]: PuppetDTO.PostSearchRequest
   [MqCommandType.postPayload]: PuppetDTO.PostPayloadRequest
@@ -300,6 +302,7 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messageWxxdOrder]: PuppetDTO.MessageWxxdOrderResponse
   
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadResponse
+  [MqCommandType.friendshipSearchHandle]: PuppetDTO.FriendshipSearchHandleResponse
 
   [MqCommandType.postSearch]: PuppetDTO.PostSearchResponse
   [MqCommandType.postPayload]: PuppetDTO.PostPayloadResponse
