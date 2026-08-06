@@ -535,6 +535,20 @@ class PuppetRabbit extends PUPPET.Puppet {
     return payload
   }
 
+  override async friendshipSearchHandle(handle: string, _type?: PUPPET.types.Contact): Promise<string | null> {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.friendshipSearchHandle,
+      data: {
+        handle,
+      },
+    })
+    return response.contactId ?? null
+  }
+
+  override async friendshipSearchPhone(_phone: string): Promise<string | null> {
+    throw new Error('friendshipSearchPhone is not supported by puppet-rabbit')
+  }
+
   // room
 
   override async roomAdd (roomId: string, contactId: string | string[], inviteOnly?: boolean, quoteIds?: string[]) {
