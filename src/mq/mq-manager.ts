@@ -24,6 +24,13 @@ import { v4 } from 'uuid'
 
 const PRE = 'MqManager'
 
+const DEFAULT_COMMAND_TIMEOUT = 1 * MINUTE
+// 发邮件带大附件时 SMTP 上传可达数分钟，对齐 bot-nested 发送队列的 6 分钟信封；
+// MQ 消息自身 expiration 为 10 分钟，仍留有余量
+const COMMAND_TIMEOUT_OVERRIDES: Partial<Record<MqCommandType, number>> = {
+  [MqCommandType.messageSendEmail]: 6 * MINUTE,
+}
+
 enum LISTENER_TYPE {
   ERROR,
   CLOSE,
@@ -288,7 +295,7 @@ export class MqManager extends EventEmitter {
           reject(
             new Error(`async ${message.commandType} request timeout, traceId: ${message.traceId}`),
           )
-        }, 1 * MINUTE),
+        }, COMMAND_TIMEOUT_OVERRIDES[message.commandType] ?? DEFAULT_COMMAND_TIMEOUT),
       }
       this.MqCommandResponsePool.set(message.traceId!, waiter)
     })
