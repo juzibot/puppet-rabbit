@@ -1038,6 +1038,9 @@ class PuppetRabbit extends PUPPET.Puppet {
         this.__currentUserId = undefined
         this.emit('login-url', data)
       })
+      .on('scan', (data: PUPPET.payloads.EventScan) => {
+        this.emit('scan', data)
+      })
       .on('dirty', (data: PUPPET.payloads.EventDirty) => {
         this.emit('dirty', data)
       })

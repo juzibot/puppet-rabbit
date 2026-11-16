@@ -334,6 +334,9 @@ export class MqManager extends EventEmitter {
         this._log.info(PRE, `receive login event: ${data}`)
         this.emit('login', JSON.parse(data))
         break
+      case 'scan':
+        this.emit('scan', JSON.parse(data))
+        break
       case 'post-comment':
         this.emit('post-comment', JSON.parse(data))
         break
