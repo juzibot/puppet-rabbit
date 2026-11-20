@@ -79,6 +79,7 @@ export enum MqCommandType {
   messagePremiumOnlineAppointmentCard = 'messagePremiumOnlineAppointmentCard',
 
   messageRecall = 'messageRecall',
+  messageForward = 'messageForward',
 
   messageImage = 'messageImage',
   messageFile = 'messageFile',
@@ -93,6 +94,9 @@ export enum MqCommandType {
 
   friendshipPayload = 'friendshipPayload',
   friendshipSearchHandle = 'friendshipSearchHandle',
+  friendshipSearchPhone = 'friendshipSearchPhone',
+  friendshipAdd = 'friendshipAdd',
+  friendshipAccept = 'friendshipAccept',
 
   postSearch = 'postSearch',
   postPayload = 'postPayload',
@@ -192,6 +196,7 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.messagePremiumOnlineAppointmentCard]: PuppetDTO.MessagePremiumOnlineAppointmentCardRequest
 
   [MqCommandType.messageRecall]: PuppetDTO.MessageRecallRequest
+  [MqCommandType.messageForward]: PuppetDTO.MessageForwardRequest
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageRequest
   [MqCommandType.messageFile]: PuppetDTO.MessageFileRequest
@@ -206,6 +211,9 @@ export type PuppetRequestTypeMap = {
 
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadRequest
   [MqCommandType.friendshipSearchHandle]: PuppetDTO.FriendshipSearchHandleRequest
+  [MqCommandType.friendshipSearchPhone]: PuppetDTO.FriendshipSearchPhoneRequest
+  [MqCommandType.friendshipAdd]: PuppetDTO.FriendshipAddRequest
+  [MqCommandType.friendshipAccept]: PuppetDTO.FriendshipAcceptRequest
 
   [MqCommandType.postSearch]: PuppetDTO.PostSearchRequest
   [MqCommandType.postPayload]: PuppetDTO.PostPayloadRequest
@@ -289,6 +297,7 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.messagePremiumOnlineAppointmentCard]: PuppetDTO.MessagePremiumOnlineAppointmentCardResponse
 
   [MqCommandType.messageRecall]: PuppetDTO.MessageRecallResponse
+  [MqCommandType.messageForward]: PuppetDTO.MessageForwardResponse
 
   [MqCommandType.messageImage]: PuppetDTO.MessageImageResponse
   [MqCommandType.messageFile]: PuppetDTO.MessageFileResponse
@@ -303,6 +312,9 @@ export type PuppetResponseTypeMap = {
   
   [MqCommandType.friendshipPayload]: PuppetDTO.FriendshipPayloadResponse
   [MqCommandType.friendshipSearchHandle]: PuppetDTO.FriendshipSearchHandleResponse
+  [MqCommandType.friendshipSearchPhone]: PuppetDTO.FriendshipSearchPhoneResponse
+  [MqCommandType.friendshipAdd]: PuppetDTO.FriendshipAddResponse
+  [MqCommandType.friendshipAccept]: PuppetDTO.FriendshipAcceptResponse
 
   [MqCommandType.postSearch]: PuppetDTO.PostSearchResponse
   [MqCommandType.postPayload]: PuppetDTO.PostPayloadResponse
