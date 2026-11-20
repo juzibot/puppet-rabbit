@@ -369,6 +369,22 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.result
   }
 
+  override async messageForward(conversationId: string, messageId: string | string[]): Promise<string | void> {
+    const messageIds = Array.isArray(messageId) ? messageId : [messageId]
+    let lastMessageId: string | undefined
+    for (const id of messageIds) {
+      const response = await this.mqManager.sendMqCommand({
+        commandType: MqCommandType.messageForward,
+        data: {
+          conversationId,
+          messageId: id,
+        },
+      })
+      lastMessageId = response.messageId
+    }
+    return lastMessageId
+  }
+
   override async messageSendWxxdProduct(conversationId: string, productId: string) {
     const response = await this.mqManager.sendMqCommand({
       commandType: MqCommandType.messageSendWxxdProduct,
@@ -545,8 +561,34 @@ class PuppetRabbit extends PUPPET.Puppet {
     return response.contactId ?? null
   }
 
-  override async friendshipSearchPhone(_phone: string): Promise<string | null> {
-    throw new Error('friendshipSearchPhone is not supported by puppet-rabbit')
+  override async friendshipSearchPhone(phone: string, type?: PUPPET.types.Contact): Promise<string | null> {
+    const response = await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.friendshipSearchPhone,
+      data: {
+        phone,
+        type,
+      },
+    })
+    return response.contactId ?? null
+  }
+
+  override async friendshipAdd(contactId: string, option?: PUPPET.types.FriendshipAddOptions): Promise<void> {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.friendshipAdd,
+      data: {
+        contactId,
+        option,
+      },
+    })
+  }
+
+  override async friendshipAccept(friendshipId: string): Promise<void> {
+    await this.mqManager.sendMqCommand({
+      commandType: MqCommandType.friendshipAccept,
+      data: {
+        friendshipId,
+      },
+    })
   }
 
   // room
