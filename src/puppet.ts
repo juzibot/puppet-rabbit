@@ -1,5 +1,5 @@
 import * as PUPPET from '@juzi/wechaty-puppet'
-import { MqManager } from './mq/mq-manager.js'
+import { MqCommandTimeoutError, MqManager } from './mq/mq-manager.js'
 import { MqCommandType } from './model/mq.js'
 import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
 import { ContactListResponse } from './dto.js'
@@ -44,10 +44,17 @@ class PuppetRabbit extends PUPPET.Puppet {
       exchangeBaseName: this.options.exchangeBaseName,
     })
 
-    await this.mqManager.sendMqCommand({
-      commandType: MqCommandType.start,
-      data: {},
-    })
+    try {
+      await this.mqManager.sendMqCommand({
+        commandType: MqCommandType.start,
+        data: {},
+      })
+    } catch (error: unknown) {
+      if (!(error instanceof MqCommandTimeoutError)) {
+        throw error
+      }
+      this.log.warn(PRE, `${error.message}; keeping the consumer active for a later login event`)
+    }
 
     this.startHeartbeat()
   }
@@ -61,7 +68,11 @@ class PuppetRabbit extends PUPPET.Puppet {
   startHeartbeat() {
     this.stopHeartbeat()
     this.heartbeatTimer = setInterval(async () => {
-      void this.ding('heartbeat')
+      try {
+        await this.ding('heartbeat')
+      } catch (error: unknown) {
+        this.log.warn(PRE, `Heartbeat failed: ${error}`)
+      }
     }, 30 * 1000)
   }
 
