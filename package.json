@@ -1,6 +1,6 @@
 {
   "name": "@juzi/wechaty-puppet-rabbit",
-  "version": "1.0.53",
+  "version": "1.0.54",
   "type": "module",
   "description": "",
   "main": "index.js",
@@ -19,7 +19,7 @@
     "build": "tsc && tsc -p tsconfig.cjs.json",
     "dist:commonjs": "jq -n \"{ type: \\\"commonjs\\\" }\" > dist/cjs/package.json",
     "clean": "rm -fr dist/*",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run build && node --test --test-concurrency=4 test/lifecycle.test.mjs"
   },
   "keywords": [],
   "author": "",
