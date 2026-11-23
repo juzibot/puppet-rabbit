@@ -53,6 +53,7 @@ export class MqManager extends EventEmitter {
   private readonly failedConnections = new WeakSet<AmqpConnectService>()
   private readonly closedChannels = new WeakSet<AmqpChannelService>()
 
+  private connectionName: string | undefined
   private connected = false
   private destroyed = false
   private lifecycle = 0
@@ -125,10 +126,10 @@ export class MqManager extends EventEmitter {
       }
       // no idea why have to add default
       const creator = Onirii.createAmqpConnect || (Onirii as any).default.createAmqpConnect
-      this.puppetConnection = creator(
-        `puppet-${token}-${Date.now()}`,
-        mqUri,
-      )
+      // Onirii registers a process-wide log4js appender per connection name and never removes it;
+      // a stable name per manager keeps reconnect loops from growing that registry.
+      this.connectionName ??= `puppet-${token}-${Date.now()}`
+      this.puppetConnection = creator(this.connectionName, mqUri)
       this.token = token
       this.exchangeBaseName = exchangeBaseName
       this.mqUri = mqUri
