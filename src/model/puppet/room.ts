@@ -9,6 +9,21 @@ export type RoomAddRequest = {
 
 export type RoomAddResponse = {}
 
+export type RoomAddV2Request = {
+  roomId: string,
+  contactIds: string[],
+  inviteOnly?: boolean,
+  quoteIds?: string[],
+}
+
+export type RoomMemberV2Response = {
+  successList: string[],
+  failList: string[],
+  failReasonList: string[],
+}
+
+export type RoomAddV2Response = RoomMemberV2Response
+
 export type RoomAvatarRequest = {
   roomId: string,
   avatarFilebox?: string,
@@ -33,6 +48,13 @@ export type RoomDelRequest = {
 }
 
 export type RoomDelResponse = {}
+
+export type RoomDelV2Request = {
+  roomId: string,
+  contactIds: string[],
+}
+
+export type RoomDelV2Response = RoomMemberV2Response
 
 export type RoomListRequest = {}
 

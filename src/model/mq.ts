@@ -30,9 +30,11 @@ export enum MqCommandType {
   contactPayloadModify = 'contactPayloadModify',
 
   roomAdd = 'roomAdd',
+  roomAddV2 = 'roomAddV2',
   roomAvatar = 'roomAvatar',
   roomCreate = 'roomCreate',
   roomDel = 'roomDel',
+  roomDelV2 = 'roomDelV2',
   roomList = 'roomList',
   roomQRCode = 'roomQRCode',
   roomParseDynamicQRCode = 'roomParseDynamicQRCode',
@@ -147,9 +149,11 @@ export type PuppetRequestTypeMap = {
   [MqCommandType.contactPayloadModify]: PuppetDTO.ContactPayloadModifyRequest
 
   [MqCommandType.roomAdd]: PuppetDTO.RoomAddRequest
+  [MqCommandType.roomAddV2]: PuppetDTO.RoomAddV2Request
   [MqCommandType.roomAvatar]: PuppetDTO.RoomAvatarRequest
   [MqCommandType.roomCreate]: PuppetDTO.RoomCreateRequest
   [MqCommandType.roomDel]: PuppetDTO.RoomDelRequest
+  [MqCommandType.roomDelV2]: PuppetDTO.RoomDelV2Request
   [MqCommandType.roomList]: PuppetDTO.RoomListRequest
   [MqCommandType.roomQRCode]: PuppetDTO.RoomQRCodeRequest
   [MqCommandType.roomParseDynamicQRCode]: PuppetDTO.RoomParseDynamicQRCodeRequest
@@ -248,9 +252,11 @@ export type PuppetResponseTypeMap = {
   [MqCommandType.contactPayloadModify]: PuppetDTO.ContactPayloadModifyResponse
 
   [MqCommandType.roomAdd]: PuppetDTO.RoomAddResponse
+  [MqCommandType.roomAddV2]: PuppetDTO.RoomAddV2Response
   [MqCommandType.roomAvatar]: PuppetDTO.RoomAvatarResponse
   [MqCommandType.roomCreate]: PuppetDTO.RoomCreateResponse
   [MqCommandType.roomDel]: PuppetDTO.RoomDelResponse
+  [MqCommandType.roomDelV2]: PuppetDTO.RoomDelV2Response
   [MqCommandType.roomList]: PuppetDTO.RoomListResponse
   [MqCommandType.roomQRCode]: PuppetDTO.RoomQRCodeResponse
   [MqCommandType.roomParseDynamicQRCode]: PuppetDTO.RoomParseDynamicQRCodeResponse
