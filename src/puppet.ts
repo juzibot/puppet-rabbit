@@ -1,18 +1,63 @@
 import * as PUPPET from '@juzi/wechaty-puppet'
-import { MqCommandTimeoutError, MqManager } from './mq/mq-manager.js'
-import { MqCommandType } from './model/mq.js'
-import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
-import { ContactListResponse } from './dto.js'
-import { stringifyFileBox, toSerializableFileBox } from './util/file.js'
 import { PremiumOnlineAppointmentCardListRequest, PremiumOnlineAppointmentCardListResponse, PremiumOnlineAppointmentCardSendPayload, WxxdOrderDeliverySendRequest, WxxdOrderGenAfterSaleOrderRequest } from '@juzi/wechaty-puppet/dist/esm/src/schemas/mod.js'
+import { FileBox, FileBoxInterface, FileBoxType } from 'file-box'
+
+import type { ContactListResponse, RoomAddV2Response, RoomDelV2Response, RoomMemberV2Response } from './dto.js'
+import { MqCommandType, type MqRequest } from './model/mq.js'
+import { MqCommandTimeoutError, MqManager } from './mq/mq-manager.js'
+import { stringifyFileBox, toSerializableFileBox } from './util/file.js'
 
 export type PuppetRabbitOptions = PUPPET.PuppetOptions & {
   mqUri: string
   exchangeBaseName: string
   token: string
+  // Enable only when the call-center handles both V2 commands.
+  roomMemberV2?: boolean
 }
 
+type RoomMemberV2Command = MqCommandType.roomAddV2 | MqCommandType.roomDelV2
+
 const PRE = 'PuppetRabbit'
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item: unknown): boolean => typeof item === 'string')
+}
+
+function assertRoomMemberV2Response(
+  commandType: RoomMemberV2Command,
+  response: unknown,
+): asserts response is RoomMemberV2Response {
+  if (
+    typeof response !== 'object' || response === null
+    || !('successList' in response) || !isStringArray(response.successList)
+    || !('failList' in response) || !isStringArray(response.failList)
+    || !('failReasonList' in response) || !isStringArray(response.failReasonList)
+  ) {
+    throw new Error(`Invalid ${commandType} response: successList, failList and failReasonList must be string arrays`)
+  }
+  if (response.failList.length !== response.failReasonList.length) {
+    throw new Error(`Invalid ${commandType} response: failList and failReasonList must have the same length`)
+  }
+}
+
+async function sendRoomMemberV2Command<T extends RoomMemberV2Command>(
+  mqManager: MqManager,
+  command: MqRequest<T>,
+): Promise<RoomMemberV2Response> {
+  let response: unknown
+  try {
+    response = await mqManager.sendMqCommand(command)
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown MQ error'
+    // Wechaty treats these messages as permission to retry with V1.
+    const reason = message
+      .replaceAll('is not a function', 'is not callable')
+      .replaceAll('The server does not implement the method', 'Unsupported server method')
+    throw new Error(`${command.commandType} MQ command failed: ${reason}`, { cause: error })
+  }
+  assertRoomMemberV2Response(command.commandType, response)
+  return response
+}
 
 class PuppetRabbit extends PUPPET.Puppet {
   private readonly mqManager: MqManager
@@ -616,6 +661,21 @@ class PuppetRabbit extends PUPPET.Puppet {
     })
   }
 
+  override async roomAddV2(
+    roomId: string,
+    contactIds: string[],
+    inviteOnly?: boolean,
+    quoteIds?: string[],
+  ): Promise<RoomAddV2Response> {
+    if (this.options.roomMemberV2 !== true) {
+      throw new Error('roomAddV2 is not a function')
+    }
+    return sendRoomMemberV2Command(this.mqManager, {
+      commandType: MqCommandType.roomAddV2,
+      data: { roomId, contactIds, inviteOnly, quoteIds },
+    })
+  }
+
   override async roomAvatar(roomId: string, fileBox?: FileBoxInterface) {
     if (fileBox?.type !== FileBoxType.Url) {
       throw new Error('not supported')
@@ -651,6 +711,16 @@ class PuppetRabbit extends PUPPET.Puppet {
         roomId,
         contactIds: Array.isArray(contactIds) ? contactIds : [contactIds],
       }
+    })
+  }
+
+  override async roomDelV2(roomId: string, contactIds: string[]): Promise<RoomDelV2Response> {
+    if (this.options.roomMemberV2 !== true) {
+      throw new Error('roomDelV2 is not a function')
+    }
+    return sendRoomMemberV2Command(this.mqManager, {
+      commandType: MqCommandType.roomDelV2,
+      data: { roomId, contactIds },
     })
   }
 

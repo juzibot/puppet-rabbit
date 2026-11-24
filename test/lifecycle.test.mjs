@@ -270,3 +270,96 @@ test('a pending channel retry cannot suppress a new connection channel close', a
   assert.deepEqual(transports[2].counts(), [1, 1, 0])
   await mqManager.destroy()
 })
+
+function puppetWithRoomMemberResponse (roomMemberV2, response) {
+  const mqManager = new MqManager(log)
+  const published = []
+  mqManager.exchangeBaseName = 'test'
+  const channel = {
+    async sendMessageToExchange (_exchange, _key, content) {
+      const { traceId, commandType, data } = JSON.parse(content)
+      published.push({ commandType, data: JSON.parse(data) })
+      const result = response instanceof Error
+        ? { code: 1, error: response.message }
+        : { data: JSON.stringify(response) }
+      await mqManager.consumption({ content: Buffer.from(JSON.stringify({
+        traceId, type: 'command', ...result,
+      })) }, channel)
+    },
+    ackMessage () {},
+  }
+  mqManager.puppetChannel = channel
+  return { puppet: { mqManager, options: { roomMemberV2 } }, published }
+}
+
+test('room member V2 falls back without publishing when not explicitly enabled', async () => {
+  for (const roomMemberV2 of [undefined, false]) {
+    const { puppet, published } = puppetWithRoomMemberResponse(roomMemberV2, {})
+    for (const method of ['roomAddV2', 'roomDelV2']) {
+      await assert.rejects(async () => {
+        await PuppetRabbit.prototype[method].call(puppet, 'room', ['a', 'b'])
+      }, { message: `${method} is not a function` })
+    }
+    assert.deepEqual(published, [])
+  }
+})
+
+test('room member V2 publishes one batch command per operation and returns partial success', async () => {
+  const response = { successList: ['a'], failList: ['b'], failReasonList: ['not permitted'] }
+  const { puppet, published } = puppetWithRoomMemberResponse(true, response)
+  const roomId = 'room'
+  const contactIds = ['a', 'b']
+  const quoteIds = ['quote']
+  assert.deepEqual(await PuppetRabbit.prototype.roomAddV2.call(puppet, roomId, contactIds, false, quoteIds), response)
+  assert.deepEqual(await PuppetRabbit.prototype.roomDelV2.call(puppet, roomId, contactIds), response)
+  assert.deepEqual(published, [
+    { commandType: 'roomAddV2', data: { roomId, contactIds, inviteOnly: false, quoteIds } },
+    { commandType: 'roomDelV2', data: { roomId, contactIds } },
+  ])
+})
+
+test('room member V2 rejects invalid response fields and mismatched failure lists', async () => {
+  const empty = { successList: [], failList: [], failReasonList: [] }
+  for (const response of [
+    null,
+    {},
+    { ...empty, successList: [1] },
+    { ...empty, failList: [1], failReasonList: ['denied'] },
+    { ...empty, failList: ['a'], failReasonList: [null] },
+    { ...empty, failList: ['a'] },
+  ]) {
+    const { puppet } = puppetWithRoomMemberResponse(true, response)
+    await assert.rejects(PuppetRabbit.prototype.roomAddV2.call(puppet, 'room', ['a']), /Invalid roomAddV2 response/)
+    await assert.rejects(PuppetRabbit.prototype.roomDelV2.call(puppet, 'room', ['a']), /Invalid roomDelV2 response/)
+  }
+})
+
+test('room member V2 preserves the MQ error cause without exposing fallback markers', async ({ mock }) => {
+  const markers = ['is not a function', 'The server does not implement the method']
+  const serverError = new Error(`helper ${markers[0]}; ${markers[1]}`)
+  const { puppet, published } = puppetWithRoomMemberResponse(true, serverError)
+  const sendMqCommand = puppet.mqManager.sendMqCommand.bind(puppet.mqManager)
+  let originalError
+  mock.method(puppet.mqManager, 'sendMqCommand', async (command) => {
+    try {
+      return await sendMqCommand(command)
+    } catch (error) {
+      originalError = error
+      throw error
+    }
+  })
+
+  for (const method of ['roomAddV2', 'roomDelV2']) {
+    await assert.rejects(PuppetRabbit.prototype[method].call(puppet, 'room', ['a']), (error) => {
+      assert.equal(error.constructor, Error)
+      assert.notEqual(error, originalError)
+      assert.equal(error.cause, originalError)
+      assert.equal(error.cause.message, serverError.message)
+      for (const marker of markers) {
+        assert.equal(error.message.includes(marker), false)
+      }
+      return true
+    })
+  }
+  assert.deepEqual(published.map(({ commandType }) => commandType), ['roomAddV2', 'roomDelV2'])
+})
